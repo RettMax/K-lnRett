@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#111827">
-<title>RD Köln – Navigation</title>
+<title>RettMax – Köln</title>
 
 <!-- Leaflet CSS für die Karte -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -243,7 +243,7 @@ const specialtyData = [
    specialties:["Kinder- und Jugendmedizin","Kinderchirurgie","Kinderanästhesiologie","Kinderradiologie","Neonatologie","Pädiatrie","Pädiatrische Intensivmedizin"]},
   {name:"Krankenhaus der Augustinerinnen – Severinsklösterchen", addr:"Jakobstraße 27–31, 50678 Köln", lat:50.9247, lon:6.9575,
    specialties:["Anästhesiologie","Chirurgie","Gynäkologie","Geburtshilfe","Innere Medizin","Kardiologie","Neurologie","Orthopädie","Urologie"]},
-  {name:"Cellitinnen-Krankenhaus St. Franziskus", addr:"Schönsteinstraße 63, 50825 Köln", lat:50.9573, lon:6.9132,
+  {name:"Cellitinnen-Krankenhaus St. Franziskus", addr:"Schönsteinstraße 63, 50825 Köln", lat:50.95438987999637, lon:6.9185825477763245,
    specialties:["Chirurgie","Geriatrie","Innere Medizin","Kardiologie","Orthopädie","Unfallchirurgie"]},
   {name:"Cellitinnen-Krankenhaus Heilig Geist", addr:"Graseggerstraße 105, 50737 Köln", lat:50.9921, lon:6.9067,
    specialties:["Chirurgie","Geriatrie","Innere Medizin","Kardiologie","Orthopädie","Unfallchirurgie"]},
@@ -315,7 +315,7 @@ navModal.addEventListener("click", (e) => {
 // --- KARTE INITIALISIEREN ---
 const map = L.map('map').setView([50.9375, 6.9603], 11);
 
-L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?key=cb1_3u3g_1_f96f1132efea9e302ef77176', {
   attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
   subdomains: 'abcd',
   maxZoom: 19
