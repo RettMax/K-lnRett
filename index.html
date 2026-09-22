@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#111827">
+<title>RD Köln – Navigation</title>
+<style>
+:root{
+  --bg:#0b1220; --panel:#111827; --panel2:#172033; --line:#273449;
+  --text:#f8fafc; --muted:#94a3b8; --accent:#e11d48; --accent2:#fb7185;
+}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(180deg,#080d18,#0f172a);color:var(--text);font-family:Inter,Arial,sans-serif}
+header{position:sticky;top:0;z-index:10;background:rgba(11,18,32,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.top{max-width:1200px;margin:auto;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:15px}
+.brand{font-weight:800;font-size:21px}.brand span{color:#fb7185}
+.status{font-size:12px;color:#86efac;background:#12301f;padding:7px 10px;border-radius:999px}
+main{max-width:1200px;margin:auto;padding:24px 20px 50px}
+.hero{padding:18px 0 24px}.hero h1{font-size:34px;margin:0 0 8px}.hero p{margin:0;color:var(--muted)}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:8px 0 22px}
+.tab{border:1px solid var(--line);background:var(--panel);color:var(--text);padding:14px 12px;border-radius:12px;font-weight:700;cursor:pointer}
+.tab.active{background:var(--accent);border-color:var(--accent)}
+.search{width:100%;padding:14px 16px;border:1px solid var(--line);background:#0f172a;color:white;border-radius:12px;font-size:16px;margin-bottom:16px;outline:none}
+.search:focus{border-color:var(--accent2)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.card{background:linear-gradient(180deg,var(--panel),#0f172a);border:1px solid var(--line);border-radius:15px;padding:17px;display:flex;flex-direction:column;min-height:180px}
+.card h3{margin:0 0 7px;font-size:17px}.area{color:#fb7185;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.addr{color:var(--muted);font-size:14px;line-height:1.45;margin:8px 0 14px}
+.note{font-size:12px;color:#cbd5e1;background:#111c2e;border-radius:9px;padding:8px;margin-bottom:12px}
+.actions{margin-top:auto;display:flex;gap:8px}
+.btn{flex:1;text-align:center;text-decoration:none;border-radius:10px;padding:11px 9px;font-weight:700;font-size:14px}
+.route{background:var(--accent);color:white}.copy{background:#1e293b;color:white;border:1px solid var(--line);cursor:pointer}
+.empty{padding:30px;text-align:center;color:var(--muted);display:none}
+footer{max-width:1200px;margin:0 auto;padding:0 20px 30px;color:#64748b;font-size:12px;line-height:1.5}
+.warning{border:1px solid #713f12;background:#27170b;color:#fed7aa;padding:12px 14px;border-radius:12px;margin:0 0 20px;font-size:13px}
+@media(max-width:650px){.tabs{grid-template-columns:repeat(2,1fr)}.hero h1{font-size:28px}.grid{grid-template-columns:1fr}.top{padding:14px 16px}main{padding:18px 16px 40px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="top">
+    <div class="brand">RD <span>Köln</span> · Navigation</div>
+    <div class="status">Offline-Daten</div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <h1>Ziele schnell finden</h1>
+    <p>ZNA · Dialyse · Feuer- & Rettungswachen · weitere Ziele</p>
+  </section>
+
+  <div class="warning">
+    <b>Wichtig:</b> Diese Seite ist ein Navigations-/Adressverzeichnis und ersetzt keine rettungsdienstliche Zielentscheidung.
+    Vor dem Einsatz sollte die hinterlegte Anfahrtsadresse mit der aktuellen Vorgabe der jeweiligen Einrichtung abgeglichen werden.
+  </div>
+
+  <nav class="tabs" aria-label="Kategorien">
+    <button class="tab active" data-cat="ZNA">ZNA</button>
+    <button class="tab" data-cat="Dialyse">Dialyse</button>
+    <button class="tab" data-cat="Wachen">Wachen</button>
+    <button class="tab" data-cat="Weitere">Weitere</button>
+  </nav>
+
+  <input id="search" class="search" type="search" placeholder="Ziel, Stadtteil oder Adresse suchen …">
+  <div id="grid" class="grid"></div>
+  <div id="empty" class="empty">Keine passenden Ziele gefunden.</div>
+</main>
+
+<footer>
+  Datenstand: 22.09.2026. Die Website enthält derzeit eine geprüfte Startauswahl; insbesondere
+  konkrete RTW-/KTW-Anfahrten können sich ändern. Vor produktiver Nutzung im Rettungsdienst sollten
+  alle Ziele mit den offiziellen Angaben der jeweiligen Häuser bzw. Leitstellen-/Trägerinformationen
+  abgeglichen werden.
+</footer>
+
+<script>
+const data = [
+  // ZNA
+  {cat:"ZNA",name:"Uniklinik Köln – Zentrale Notaufnahme",area:"Lindenthal",addr:"Kerpener Str. 64, 50937 Köln",note:"Offizielle Rettungswagenanfahrt der Uniklinik.",src:"https://www.uk-koeln.de/kliniken-institute-und-zentren/zentrale-notaufnahme/"},
+  {cat:"ZNA",name:"Krankenhaus der Augustinerinnen – Severinsklösterchen",area:"Südstadt",addr:"Jakobstraße 27–31, 50678 Köln",note:"Zentrale Notaufnahme.",src:"https://www.severinskloesterchen.de/medizin/zentrale-notaufnahme/team-und-kontakt"},
+  {cat:"ZNA",name:"Cellitinnen-Krankenhaus St. Franziskus",area:"Ehrenfeld",addr:"Schönsteinstraße 63, 50825 Köln",note:"Zentrale Notaufnahme.",src:"https://www.stfranziskus.de/medizin/zentrale-notaufnahme"},
+  {cat:"ZNA",name:"Cellitinnen-Krankenhaus Heilig Geist",area:"Longerich",addr:"Graseggerstraße 105, 50737 Köln",note:"Notfallversorgung / ZNA.",src:"https://www.cellitinnenhaeuser.de/unsere-einrichtungen/krankenhaeuser/"},
+  {cat:"ZNA",name:"Cellitinnen-Krankenhaus St. Hildegardis",area:"Lindenthal",addr:"Bachemer Str. 29–33, 50931 Köln",note:"Notfallversorgung.",src:"https://kliniknrw.de/koeln/notaufnahme"},
+  {cat:"ZNA",name:"Cellitinnen-Krankenhaus St. Vinzenz",area:"Nippes",addr:"Merheimer Str. 221–223, 50733 Köln",note:"Notfallversorgung.",src:"https://kliniknrw.de/koeln/notaufnahme"},
+  {cat:"ZNA",name:"Cellitinnen-Krankenhaus St. Antonius",area:"Bayenthal",addr:"Schillerstraße 23, 50968 Köln",note:"Krankenhausstandort; konkrete Notaufnahme-Anfahrt vor Nutzung verifizieren.",src:"https://www.cellitinnenhaeuser.de/unsere-einrichtungen/krankenhaeuser/"},
+  {cat:"ZNA",name:"Krankenhaus Köln-Merheim",area:"Merheim",addr:"Ostmerheimer Str. 200, 51109 Köln",note:"Krankenhausstandort; konkrete Notaufnahme-Anfahrt vor Nutzung verifizieren.",src:"https://www.kliniken-koeln.de/"},
+  // Dialyse
+  {cat:"Dialyse",name:"KfH-Nierenzentrum Köln-Porz",area:"Porz",addr:"Urbacher Weg 19, 51149 Köln",note:"KfH Dialysezentrum.",src:"https://www.kfh.de/"},
+  {cat:"Dialyse",name:"KfH-Nierenzentrum Köln-Bayenthal",area:"Bayenthal",addr:"Bernhardstr. 110, 50968 Köln",note:"KfH Dialysezentrum.",src:"https://www.kfh.de/"},
+  {cat:"Dialyse",name:"KfH-Nierenzentrum Köln-Mülheim",area:"Mülheim",addr:"Böckingstr. 54–56, 51063 Köln",note:"KfH Dialysezentrum.",src:"https://www.kfh.de/"},
+  {cat:"Dialyse",name:"KfH-Nierenzentrum Köln-Lindenthal",area:"Lindenthal",addr:"Kerpener Str. 60, 50937 Köln",note:"KfH Dialysezentrum.",src:"https://www.kfh.de/"},
+  {cat:"Dialyse",name:"KfH-Nierenzentrum Köln-Merheim",area:"Merheim",addr:"Ostmerheimer Str. 200, 51109 Köln",note:"KfH Dialysezentrum.",src:"https://www.kfh.de/"},
+  // Wachen
+  {cat:"Wachen",name:"Feuer- und Rettungswache 1 Innenstadt",area:"Innenstadt",addr:"Agrippastraße 18, 50676 Köln",note:"Berufsfeuerwehr Köln.",src:"https://www.feuerwehr-nrw.de/koeln"},
+  {cat:"Wachen",name:"Feuer- und Rettungswache 2 Marienburg",area:"Marienburg",addr:"Schillingsrotter Weg 8–12, 50968 Köln",note:"Berufsfeuerwehr Köln.",src:"https://www.feuerwehr-nrw.de/koeln"},
+  {cat:"Wachen",name:"Feuer- und Rettungswache 3 Lindenthal",area:"Lindenthal",addr:"Gleueler Str. 223–225, 50935 Köln",note:"Berufsfeuerwehr Köln.",src:"https://www.feuerwehr-nrw.de/koeln"},
+  {cat:"Wachen",name:"Feuer- und Rettungswache 4 Ehrenfeld",area:"Ehrenfeld",addr:"Äußere Kanalstr. 67, 50827 Köln",note:"Berufsfeuerwehr Köln.",src:"https://www.feuerwehr-nrw.de/koeln"},
+  {cat:"Wachen",name:"Feuer- und Rettungswache 5 Weidenpesch",area:"Weidenpesch",addr:"Scheibenstr. 13, 50737 Köln",note:"Berufsfeuerwehr Köln.",src:"https://www.feuerwehr-nrw.de/koeln"},
+  {cat:"Wachen",name:"Feuer- und Rettungswache 6 Chorweiler",area:"Chorweiler",addr:"Volkhovener Weg 184, 50765 Köln",note:"Berufsfeuerwehr Köln.",src:"https://www.feuerwehr-nrw.de/koeln"},
+  {cat:"Wachen",name:"Feuer- und Rettungswache 7 Porz",area:"Porz",addr:"Kaiserstr. 69, 51145 Köln",note:"Berufsfeuerwehr Köln.",src:"https://www.feuerwehr-nrw.de/koeln"},
+  {cat:"Wachen",name:"Feuer- und Rettungswache 8 Ostheim",area:"Ostheim",addr:"Hardtgenbuscher Kirchweg 100, 51107 Köln",note:"Berufsfeuerwehr Köln.",src:"https://www.feuerwehr-nrw.de/koeln"},
+  {cat:"Wachen",name:"Feuer- und Rettungswache 9 Mülheim",area:"Mülheim",addr:"Bergisch Gladbacher Str. 179, 51063 Köln",note:"Berufsfeuerwehr Köln.",src:"https://www.feuerwehr-nrw.de/koeln"},
+  {cat:"Wachen",name:"Feuer- und Rettungswache 10 Kalk",area:"Kalk",addr:"Gummersbacher Str. 33, 51103 Köln",note:"Berufsfeuerwehr Köln.",src:"https://www.feuerwehr-nrw.de/koeln"},
+  {cat:"Wachen",name:"Rettungswache 12 Rodenkirchen",area:"Rodenkirchen",addr:"Schillingsrotter Str. 36, 50996 Köln",note:"Rettungswache.",src:"https://www.feuerwehr-nrw.de/koeln"},
+  {cat:"Wachen",name:"Feuer- und Rettungswache 14 Lövenich",area:"Lövenich",addr:"Richard-Wagner-Str. 26–32, 50859 Köln",note:"Berufsfeuerwehr Köln.",src:"https://www.feuerwehr-nrw.de/koeln"},
+  {cat:"Wachen",name:"Rettungswache 16 Esch",area:"Esch",addr:"Weiterstr. 4, 50765 Köln",note:"Rettungswache.",src:"https://www.feuerwehr-nrw.de/koeln"},
+  {cat:"Wachen",name:"Rettungswache 17 Zündorf",area:"Zündorf",addr:"Unterm Berg 19, 51143 Köln",note:"Rettungswache.",src:"https://www.feuerwehr-nrw.de/koeln"},
+  {cat:"Wachen",name:"Rettungswache 18 Krankenhaus Merheim",area:"Merheim",addr:"Ostmerheimer Str. 200, 51109 Köln",note:"Rettungswache.",src:"https://www.feuerwehr-nrw.de/koeln"},
+  {cat:"Wachen",name:"Rettungswache 19 Dellbrück",area:"Dellbrück",addr:"Urnenstr. 9, 51069 Köln",note:"Rettungswache.",src:"https://www.feuerwehr-nrw.de/koeln"},
+  // Weitere
+  {cat:"Weitere",name:"Uniklinik – HNO / Augenklinik",area:"Lindenthal",addr:"Joseph-Stelzmann-Str. 50, 50931 Köln",note:"Offizielle Navigationsadresse für HNO und Augenklinik.",src:"https://www.uk-koeln.de/kliniken-institute-und-zentren/zentrale-notaufnahme/"},
+  {cat:"Weitere",name:"Uniklinik – Frauenklinik",area:"Lindenthal",addr:"Robert-Koch-Str. 10, 50931 Köln",note:"Offizielle Navigationsadresse der Frauenklinik.",src:"https://www.uk-koeln.de/kliniken-institute-und-zentren/zentrale-notaufnahme/"},
+  {cat:"Weitere",name:"Uniklinik – KTW/Bettenhaus-Anfahrt",area:"Lindenthal",addr:"Joseph-Stelzmann-Str. 22, 50931 Köln",note:"Offizielle Krankenwagenanfahrt laut Uniklinik.",src:"https://www.uk-koeln.de/kliniken-institute-und-zentren/zentrale-notaufnahme/"}
+];
+
+let category = "ZNA";
+const grid = document.getElementById("grid");
+const empty = document.getElementById("empty");
+const search = document.getElementById("search");
+
+function routeUrl(addr){
+  return "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(addr);
+}
+function render(){
+  const q = search.value.trim().toLowerCase();
+  const items = data.filter(x => x.cat === category &&
+    (!q || (x.name+" "+x.area+" "+x.addr).toLowerCase().includes(q)));
+  grid.innerHTML = "";
+  empty.style.display = items.length ? "none" : "block";
+  for(const x of items){
+    const card = document.createElement("article");
+    card.className = "card";
+    card.innerHTML = `
+      <div class="area">${x.area}</div>
+      <h3>${x.name}</h3>
+      <div class="addr">${x.addr}</div>
+      <div class="note">${x.note}</div>
+      <div class="actions">
+        <a class="btn route" target="_blank" rel="noopener" href="${routeUrl(x.addr)}">Navigation</a>
+        <button class="btn copy" data-address="${x.addr}">Adresse kopieren</button>
+      </div>`;
+    grid.appendChild(card);
+  }
+  grid.querySelectorAll(".copy").forEach(btn => btn.addEventListener("click", async()=>{
+    await navigator.clipboard.writeText(btn.dataset.address);
+    const old = btn.textContent; btn.textContent = "Kopiert"; setTimeout(()=>btn.textContent=old,1000);
+  }));
+}
+document.querySelectorAll(".tab").forEach(btn => btn.addEventListener("click",()=>{
+  document.querySelectorAll(".tab").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active"); category=btn.dataset.cat; search.value=""; render();
+}));
+search.addEventListener("input", render);
+render();
+</script>
+</body>
+</html>
