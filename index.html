@@ -155,25 +155,22 @@ footer{max-width:1200px;margin:0 auto;padding:0 20px 30px;color:#64748b;font-siz
 <script>
 const data = [
   // ZNA & Krankenhäuser
-  {cat:"ZNA", name:"Uniklinik Köln – Zentrale Notaufnahme", area:"Lindenthal", addr:"Kerpener Str. 64, 50937 Köln", lat:50.9242, lon:6.9297, note:"Offizielle Rettungswagenanfahrt der Uniklinik.", src:"https://www.uk-koeln.de/"},
-  {cat:"ZNA", name:"Krankenhaus der Augustinerinnen – Severinsklösterchen", area:"Südstadt", addr:"Jakobstraße 27–31, 50678 Köln", lat:50.9247, lon:6.9575, note:"Zentrale Notaufnahme.", src:"https://www.severinskloesterchen.de/"},
-  {cat:"ZNA", name:"Cellitinnen-Krankenhaus St. Franziskus", area:"Ehrenfeld", addr:"Schönsteinstraße 63, 50825 Köln", lat:50.9573, lon:6.9132, note:"Zentrale Notaufnahme.", src:"https://www.stfranziskus.de/"},
-  {cat:"ZNA", name:"Cellitinnen-Krankenhaus Heilig Geist", area:"Longerich", addr:"Graseggerstraße 105, 50737 Köln", lat:50.9921, lon:6.9067, note:"Notfallversorgung / ZNA.", src:"https://www.cellitinnenhaeuser.de/"},
-  {cat:"ZNA", name:"Cellitinnen-Krankenhaus St. Hildegardis", area:"Lindenthal", addr:"Bachemer Str. 29–33, 50931 Köln", lat:50.9318, lon:6.9244, note:"Notfallversorgung.", src:"https://kliniknrw.de/"},
-  {cat:"ZNA", name:"Cellitinnen-Krankenhaus St. Vinzenz", area:"Nippes", addr:"Merheimer Str. 221–223, 50733 Köln", lat:50.9704, lon:6.9568, note:"Notfallversorgung.", src:"https://kliniknrw.de/"},
-  {cat:"ZNA", name:"Cellitinnen-Krankenhaus St. Antonius", area:"Bayenthal", addr:"Schillerstraße 23, 50968 Köln", lat:50.9125, lon:6.9680, note:"Krankenhausstandort / Innere & Kardiologie.", src:"https://www.cellitinnenhaeuser.de/"},
-  {cat:"ZNA", name:"Krankenhaus Köln-Merheim", area:"Merheim", addr:"Ostmerheimer Str. 200, 51109 Köln", lat:50.9445, lon:7.0575, note:"Zentrale Notaufnahme / Überregionales Traumazentrum.", src:"https://www.kliniken-koeln.de/"},
-  {cat:"ZNA", name:"Krankenhaus Köln-Holweide", area:"Holweide", addr:"Neufelder Str. 32, 51067 Köln", lat:50.9711, lon:7.0378, note:"Zentrale Notaufnahme / Perinatalzentrum.", src:"https://www.kliniken-koeln.de/"},
-  {cat:"ZNA", name:"Kinderkrankenhaus Amsterdamer Straße", area:"Niehl", addr:"Amsterdamer Str. 59, 50735 Köln", lat:50.9658, lon:6.9686, note:"Pädiatrische Notaufnahme / Kinderklinik.", src:"https://www.kliniken-koeln.de/"},
-  {cat:"ZNA", name:"Krankenhaus Porz am Rhein", area:"Porz", addr:"Urbacher Weg 19, 51149 Köln", lat:50.8792, lon:7.0620, note:"Zentrale Notaufnahme / Erwachsenen- & Kinderklinik.", src:"https://www.kh-porz.de/"},
-  {cat:"ZNA", name:"St. Elisabeth-Krankenhaus Köln-Hohenlind", area:"Lindenthal", addr:"Werthmannstraße 1, 50935 Köln", lat:50.9231, lon:6.9032, note:"Zentrale Notaufnahme.", src:"https://www.hohenlind.de/"},
-  {cat:"ZNA", name:"St. Marien-Hospital Köln", area:"Innenstadt", addr:"Kunibertskloster 11–13, 50668 Köln", lat:50.9463, lon:6.9602, note:"Notfallversorgung / Innere, Geriatrie & Pneumologie.", src:"https://www.st-marien-hospital.de/"},
-  {cat:"ZNA", name:"Evangelisches Krankenhaus Köln-Kalk", area:"Kalk", addr:"Buchforststraße 2, 51103 Köln", lat:50.9372, lon:6.9961, note:"Zentrale Notaufnahme.", src:"https://www.evkk.de/"},
-  {cat:"ZNA", name:"Eduardus-Krankenhaus Köln", area:"Deutz", addr:"Custodisstraße 3–17, 50679 Köln", lat:50.9315, lon:6.9733, note:"Notfallversorgung / Orthopädie & Chirurgie.", src:"https://www.eduardus.de/"},
-  {cat:"ZNA", name:"St. Agatha Krankenhaus Köln-Niehl", area:"Niehl", addr:"Feldgärtenstraße 97, 50735 Köln", lat:50.9840, lon:6.9635, note:"Notfallversorgung / Chirurgie, Innere & Seelische Gesundheit.", src:"https://www.st-agatha-krankenhaus.de/"},
-  {cat:"ZNA", name:"LVR-Klinik Köln", area:"Merheim", addr:"Wilhelm-Griesinger-Straße 23, 51109 Köln", lat:50.9472, lon:7.0511, note:"Psychiatrische Notfallaufnahme.", src:"https://klinik-koeln.lvr.de/"},
-  {cat:"ZNA", name:"Alexianer Krankenhaus Köln", area:"Porz-Ensen", addr:"Kölner Straße 64, 51149 Köln", lat:50.8891, lon:7.0264, note:"Psychiatrische Notfallaufnahme.", src:"https://www.alexianer-koeln.de/"},
-  {cat:"ZNA", name:"Klinik Alteburger Straße", area:"Südstadt", addr:"Alteburger Str. 8–12, 50678 Köln", lat:50.9208, lon:6.9605, note:"Fachkrankenhaus für Psychiatrie, Psychotherapie und Psychosomatik.", src:"https://www.alteburger.de/"},
+  {cat:"ZNA", name:"Uniklinik Köln – Zentrale Notaufnahme", area:"Lindenthal", addr:"Kerpener Str. 64, 50937 Köln", lat:50.92292223864161, lon:6.916368667068342, note:"Zentrale Notaufnahme.", src:"https://www.uk-koeln.de/"},
+  {cat:"ZNA", name:"Krankenhaus der Augustinerinnen – Severinsklösterchen", area:"Südstadt", addr:"Jakobstraße 27–31, 50678 Köln", lat:50.92525870832905, lon:6.956098042880355, note:"Zentrale Notaufnahme.", src:"https://www.severinskloesterchen.de/"},
+  {cat:"ZNA", name:"Cellitinnen-Krankenhaus St. Franziskus", area:"Ehrenfeld", addr:"Schönsteinstraße 63, 50825 Köln", lat:50.95438987999637, lon:6.9185825477763245, note:"Zentrale Notaufnahme.", src:"https://www.stfranziskus.de/"},
+  {cat:"ZNA", name:"Cellitinnen-Krankenhaus Heilig Geist", area:"Longerich", addr:"Graseggerstraße 105, 50737 Köln", lat:50.99259425511963, lon:6.9253353984384445, note:"Notfallversorgung / ZNA.", src:"https://www.cellitinnenhaeuser.de/"},
+  {cat:"ZNA", name:"Cellitinnen-Krankenhaus St. Hildegardis", area:"Lindenthal", addr:"Bachemer Str. 29–33, 50931 Köln", lat:50.9311852173975, lon:6.924851444354543, note:"Notfallversorgung.", src:"https://kliniknrw.de/"},
+  {cat:"ZNA", name:"Cellitinnen-Krankenhaus St. Vinzenz", area:"Nippes", addr:"Merheimer Str. 221–223, 50733 Köln", lat:50.96640903370674, lon:6.945449767167576, note:"Notfallversorgung.", src:"https://kliniknrw.de/"},
+  {cat:"ZNA", name:"Cellitinnen-Krankenhaus St. Antonius", area:"Bayenthal", addr:"Schillerstraße 23, 50968 Köln", lat:50.91076516903556, lon:6.965919620165635, note:"Krankenhausstandort / Innere & Kardiologie.", src:"https://www.cellitinnenhaeuser.de/"},
+  {cat:"ZNA", name:"Krankenhaus Köln-Merheim", area:"Merheim", addr:"Ostmerheimer Str. 200, 51109 Köln", lat:50.93928370803274, lon:7.050980414959772, note:"Zentrale Notaufnahme / Überregionales Traumazentrum.", src:"https://www.kliniken-koeln.de/"},
+  {cat:"ZNA", name:"Krankenhaus Köln-Holweide", area:"Holweide", addr:"Neufelder Str. 32, 51067 Köln", lat:50.96811041227369, lon:7.057477637262467, note:"Zentrale Notaufnahme / Perinatalzentrum.", src:"https://www.kliniken-koeln.de/"},
+  {cat:"ZNA", name:"Kinderkrankenhaus Amsterdamer Straße", area:"Niehl", addr:"Amsterdamer Str. 59, 50735 Köln", lat:50.96282191795978, lon:6.968082321751901, note:"Pädiatrische Notaufnahme / Kinderklinik.", src:"https://www.kliniken-koeln.de/"},
+  {cat:"ZNA", name:"Krankenhaus Porz am Rhein", area:"Porz", addr:"Urbacher Weg 19, 51149 Köln", lat:50.89319826982881, lon:7.05126170995884, note:"Zentrale Notaufnahme / Erwachsenen- & Kinderklinik.", src:"https://www.kh-porz.de/"},
+  {cat:"ZNA", name:"St. Elisabeth-Krankenhaus Köln-Hohenlind", area:"Lindenthal", addr:"Werthmannstraße 1, 50935 Köln", lat:50.924135204538366, lon:6.897478143101046, note:"Zentrale Notaufnahme.", src:"https://www.hohenlind.de/"},
+  {cat:"ZNA", name:"St. Marien-Hospital Köln", area:"Innenstadt", addr:"Kunibertskloster 11–13, 50668 Köln", lat:50.94802132932269, lon:6.9627386113183585, note:"Notfallversorgung / Innere, Geriatrie & Pneumologie.", src:"https://www.st-marien-hospital.de/"},
+  {cat:"ZNA", name:"Evangelisches Krankenhaus Köln-Kalk", area:"Kalk", addr:"Buchforststraße 2, 51103 Köln", lat:50.940564800021995, lon:7.009114634510572, note:"Zentrale Notaufnahme.", src:"https://www.evkk.de/"},
+  {cat:"ZNA", name:"Eduardus-Krankenhaus Köln", area:"Deutz", addr:"Custodisstraße 3–17, 50679 Köln", lat:50.93340212848803, lon:6.981755420761927, note:"Notfallversorgung / Orthopädie & Chirurgie.", src:"https://www.eduardus.de/"},
+  {cat:"ZNA", name:"LVR-Klinik Köln", area:"Merheim", addr:"Wilhelm-Griesinger-Straße 23, 51109 Köln", lat:50.93612422966737, lon:7.052211908391335, note:"Psychiatrische Notfallaufnahme.", src:"https://klinik-koeln.lvr.de/"},
 
   // Dialyse
   {cat:"Dialyse", name:"KfH-Nierenzentrum Köln-Porz", area:"Porz", addr:"Urbacher Weg 19, 51149 Köln", lat:50.8792, lon:7.0620, note:"KfH Dialysezentrum.", src:"https://www.kfh.de/"},
@@ -203,7 +200,8 @@ const data = [
   // Weitere
   {cat:"Weitere", name:"Uniklinik – HNO / Augenklinik", area:"Lindenthal", addr:"Joseph-Stelzmann-Str. 50, 50931 Köln", lat:50.9255, lon:6.9272, note:"Offizielle Navigationsadresse für HNO und Augenklinik.", src:"https://www.uk-koeln.de/"},
   {cat:"Weitere", name:"Uniklinik – Frauenklinik", area:"Lindenthal", addr:"Robert-Koch-Str. 10, 50931 Köln", lat:50.9231, lon:6.9259, note:"Offizielle Navigationsadresse der Frauenklinik.", src:"https://www.uk-koeln.de/"},
-  {cat:"Weitere", name:"Uniklinik – KTW/Bettenhaus-Anfahrt", area:"Lindenthal", addr:"Joseph-Stelzmann-Str. 22, 50931 Köln", lat:50.9261, lon:6.9281, note:"Offizielle Krankenwagenanfahrt laut Uniklinik.", src:"https://www.uk-koeln.de/"}
+  {cat:"Weitere", name:"Uniklinik – KTW/Bettenhaus-Anfahrt", area:"Lindenthal", addr:"Joseph-Stelzmann-Str. 22, 50931 Köln", lat:50.9261, lon:6.9281, note:"Offizielle Krankenwagenanfahrt laut Uniklinik.", src:"https://www.uk-koeln.de/"},
+  {cat:"Weitere", name:"Alexianer Krankenhaus Köln", area:"Porz-Ensen", addr:"Kölner Straße 64, 51149 Köln", lat:50.897428678685, lon:7.042580905906541, note:"Haupteingang.", src:"https://www.alexianer-koeln.de/"}
 ];
 
 const specialtyData = [
