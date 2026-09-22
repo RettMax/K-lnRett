@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#111827">
 <title>RD Köln – Navigation</title>
+
+<!-- Leaflet CSS für die Karte -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
 <style>
 :root{
   --bg:#0b1220; --panel:#111827; --panel2:#172033; --line:#273449;
@@ -34,7 +38,16 @@ main{max-width:1200px;margin:auto;padding:24px 20px 50px}
 .empty{padding:30px;text-align:center;color:var(--muted);display:none}
 footer{max-width:1200px;margin:0 auto;padding:0 20px 30px;color:#64748b;font-size:12px;line-height:1.5}
 .warning{border:1px solid #713f12;background:#27170b;color:#fed7aa;padding:12px 14px;border-radius:12px;margin:0 0 20px;font-size:13px}
-@media(max-width:650px){.tabs{grid-template-columns:repeat(2,1fr)}.hero h1{font-size:28px}.grid{grid-template-columns:1fr}.top{padding:14px 16px}main{padding:18px 16px 40px}}
+
+/* Karten-Sektion Styling */
+.map-section{margin:34px 0;padding-top:28px;border-top:1px solid var(--line)}
+.map-section h2{margin:0 0 7px;font-size:25px}
+#map{height:420px;width:100%;border-radius:16px;border:1px solid var(--line);z-index:1;margin-top:15px}
+.leaflet-popup-content-wrapper, .leaflet-popup-tip{background:var(--panel2);color:var(--text);border:1px solid var(--line)}
+.leaflet-popup-content{margin:14px;font-family:Inter,Arial,sans-serif}
+.map-popup-title{font-weight:700;font-size:15px;margin-bottom:4px;color:white}
+.map-popup-addr{font-size:12px;color:var(--muted);margin-bottom:10px}
+
 .specialties{margin-top:34px;padding-top:28px;border-top:1px solid var(--line)}
 .specialties h2{margin:0 0 7px;font-size:25px}
 .section-sub{margin:0 0 17px;color:var(--muted)}
@@ -45,10 +58,10 @@ footer{max-width:1200px;margin:0 auto;padding:0 20px 30px;color:#64748b;font-siz
 .specialty-status{font-size:13px;color:#cbd5e1;margin:0 0 15px;padding:10px 12px;background:#111c2e;border-radius:10px}
 .distance{color:#86efac;font-size:12px;font-weight:700;margin:-3px 0 8px}
 .specialty-list{font-size:13px;color:#cbd5e1;line-height:1.5;margin-bottom:12px}
-@media(max-width:650px){.specialty-controls{flex-direction:column}.location-btn{padding:12px}.specialty-controls .search{margin-bottom:0}}
+@media(max-width:650px){.tabs{grid-template-columns:repeat(2,1fr)}.hero h1{font-size:28px}.grid{grid-template-columns:1fr}.top{padding:14px 16px}main{padding:18px 16px 40px}.specialty-controls{flex-direction:column}.location-btn{padding:12px}.specialty-controls .search{margin-bottom:0}}
 
 /* Modal für Navigations-Auswahl */
-.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.75);backdrop-filter:blur(5px);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.75);backdrop-filter:blur(5px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px}
 .modal{background:var(--panel2);border:1px solid var(--line);border-radius:16px;padding:24px;max-width:380px;width:100%;box-shadow:0 20px 25px -5px rgba(0,0,0,.5);text-align:center}
 .modal h3{margin:0 0 8px;font-size:20px}
 .modal-addr{color:var(--muted);font-size:13px;line-height:1.4;margin:0 0 20px;word-break:break-word}
@@ -91,6 +104,13 @@ footer{max-width:1200px;margin:0 auto;padding:0 20px 30px;color:#64748b;font-siz
   <div id="grid" class="grid"></div>
   <div id="empty" class="empty">Keine passenden Ziele gefunden.</div>
 
+  <!-- NEU: Interaktive Karte zwischen den beiden Flächen -->
+  <section class="map-section">
+    <h2>Übersichtskarte</h2>
+    <p class="section-sub">Alle hinterlegten Rettungsdienstziele, Notaufnahmen und Wachen im Kölner Stadtgebiet auf einen Blick.</p>
+    <div id="map"></div>
+  </section>
+
   <section class="specialties">
     <h2>Zielfachrichtung finden</h2>
     <p class="section-sub">Fachrichtung eingeben – die Website zeigt passende Kölner Krankenhäuser nach Entfernung zur gewählten Position.</p>
@@ -123,64 +143,67 @@ footer{max-width:1200px;margin:0 auto;padding:0 20px 30px;color:#64748b;font-siz
 </div>
 
 <footer>
-  Datenstand: Deutsches Krankenhaus Verzeichnis. Die Website enthält eine geprüfte Gesamtauswahl der Kölner Kliniken; insbesondere
+  Datenstand: Deutsches Krankenhaus Verzeichnis / Leitstellendatenbank. Die Website enthält eine geprüfte Gesamtauswahl der Kölner Kliniken; insbesondere
   konkrete RTW-/KTW-Anfahrten können sich ändern. Vor produktiver Nutzung im Rettungsdienst sollten
   alle Ziele mit den offiziellen Angaben der jeweiligen Häuser bzw. Leitstellen-/Trägerinformationen
   abgeglichen werden.
 </footer>
 
+<!-- Leaflet JavaScript für die Karte -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 <script>
 const data = [
   // ZNA & Krankenhäuser
-  {cat:"ZNA",name:"Uniklinik Köln – Zentrale Notaufnahme",area:"Lindenthal",addr:"Kerpener Str. 64, 50937 Köln",note:"Offizielle Rettungswagenanfahrt der Uniklinik.",src:"https://www.uk-koeln.de/kliniken-institute-und-zentren/zentrale-notaufnahme/"},
-  {cat:"ZNA",name:"Krankenhaus der Augustinerinnen – Severinsklösterchen",area:"Südstadt",addr:"Jakobstraße 27–31, 50678 Köln",note:"Zentrale Notaufnahme.",src:"https://www.severinskloesterchen.de/medizin/zentrale-notaufnahme/team-und-kontakt"},
-  {cat:"ZNA",name:"Cellitinnen-Krankenhaus St. Franziskus",area:"Ehrenfeld",addr:"Schönsteinstraße 63, 50825 Köln",note:"Zentrale Notaufnahme.",src:"https://www.stfranziskus.de/medizin/zentrale-notaufnahme"},
-  {cat:"ZNA",name:"Cellitinnen-Krankenhaus Heilig Geist",area:"Longerich",addr:"Graseggerstraße 105, 50737 Köln",note:"Notfallversorgung / ZNA.",src:"https://www.cellitinnenhaeuser.de/unsere-einrichtungen/krankenhaeuser/"},
-  {cat:"ZNA",name:"Cellitinnen-Krankenhaus St. Hildegardis",area:"Lindenthal",addr:"Bachemer Str. 29–33, 50931 Köln",note:"Notfallversorgung.",src:"https://kliniknrw.de/koeln/notaufnahme"},
-  {cat:"ZNA",name:"Cellitinnen-Krankenhaus St. Vinzenz",area:"Nippes",addr:"Merheimer Str. 221–223, 50733 Köln",note:"Notfallversorgung.",src:"https://kliniknrw.de/koeln/notaufnahme"},
-  {cat:"ZNA",name:"Cellitinnen-Krankenhaus St. Antonius",area:"Bayenthal",addr:"Schillerstraße 23, 50968 Köln",note:"Krankenhausstandort / Innere & Kardiologie.",src:"https://www.cellitinnenhaeuser.de/unsere-einrichtungen/krankenhaeuser/"},
-  {cat:"ZNA",name:"Krankenhaus Köln-Merheim",area:"Merheim",addr:"Ostmerheimer Str. 200, 51109 Köln",note:"Zentrale Notaufnahme / Überregionales Traumazentrum.",src:"https://www.kliniken-koeln.de/"},
-  {cat:"ZNA",name:"Krankenhaus Köln-Holweide",area:"Holweide",addr:"Neufelder Str. 32, 51067 Köln",note:"Zentrale Notaufnahme / Perinatalzentrum.",src:"https://www.kliniken-koeln.de/"},
-  {cat:"ZNA",name:"Kinderkrankenhaus Amsterdamer Straße",area:"Niehl",addr:"Amsterdamer Str. 59, 50735 Köln",note:"Pädiatrische Notaufnahme / Kinderklinik.",src:"https://www.kliniken-koeln.de/"},
-  {cat:"ZNA",name:"Krankenhaus Porz am Rhein",area:"Porz",addr:"Urbacher Weg 19, 51149 Köln",note:"Zentrale Notaufnahme / Erwachsenen- & Kinderklinik.",src:"https://www.kh-porz.de/"},
-  {cat:"ZNA",name:"St. Elisabeth-Krankenhaus Köln-Hohenlind",area:"Lindenthal",addr:"Werthmannstraße 1, 50935 Köln",note:"Zentrale Notaufnahme.",src:"https://www.hohenlind.de/"},
-  {cat:"ZNA",name:"St. Marien-Hospital Köln",area:"Innenstadt",addr:"Kunibertskloster 11–13, 50668 Köln",note:"Notfallversorgung / Innere, Geriatrie & Pneumologie.",src:"https://www.st-marien-hospital.de/"},
-  {cat:"ZNA",name:"Evangelisches Krankenhaus Köln-Kalk",area:"Kalk",addr:"Buchforststraße 2, 51103 Köln",note:"Zentrale Notaufnahme.",src:"https://www.evkk.de/"},
-  {cat:"ZNA",name:"Eduardus-Krankenhaus Köln",area:"Deutz",addr:"Custodisstraße 3–17, 50679 Köln",note:"Notfallversorgung / Orthopädie & Chirurgie.",src:"https://www.eduardus.de/"},
-  {cat:"ZNA",name:"St. Agatha Krankenhaus Köln-Niehl",area:"Niehl",addr:"Feldgärtenstraße 97, 50735 Köln",note:"Notfallversorgung / Chirurgie, Innere & Seelische Gesundheit.",src:"https://www.st-agatha-krankenhaus.de/"},
-  {cat:"ZNA",name:"LVR-Klinik Köln",area:"Merheim",addr:"Wilhelm-Griesinger-Straße 23, 51109 Köln",note:"Psychiatrische Notfallaufnahme.",src:"https://klinik-koeln.lvr.de/"},
-  {cat:"ZNA",name:"Alexianer Krankenhaus Köln",area:"Porz-Ensen",addr:"Kölner Straße 64, 51149 Köln",note:"Psychiatrische Notfallaufnahme.",src:"https://www.alexianer-koeln.de/"},
-  {cat:"ZNA",name:"Klinik Alteburger Straße",area:"Südstadt",addr:"Alteburger Str. 8–12, 50678 Köln",note:"Fachkrankenhaus für Psychiatrie, Psychotherapie und Psychosomatik.",src:"https://www.alteburger.de/"},
+  {cat:"ZNA", name:"Uniklinik Köln – Zentrale Notaufnahme", area:"Lindenthal", addr:"Kerpener Str. 64, 50937 Köln", lat:50.9242, lon:6.9297, note:"Offizielle Rettungswagenanfahrt der Uniklinik.", src:"https://www.uk-koeln.de/"},
+  {cat:"ZNA", name:"Krankenhaus der Augustinerinnen – Severinsklösterchen", area:"Südstadt", addr:"Jakobstraße 27–31, 50678 Köln", lat:50.9247, lon:6.9575, note:"Zentrale Notaufnahme.", src:"https://www.severinskloesterchen.de/"},
+  {cat:"ZNA", name:"Cellitinnen-Krankenhaus St. Franziskus", area:"Ehrenfeld", addr:"Schönsteinstraße 63, 50825 Köln", lat:50.9573, lon:6.9132, note:"Zentrale Notaufnahme.", src:"https://www.stfranziskus.de/"},
+  {cat:"ZNA", name:"Cellitinnen-Krankenhaus Heilig Geist", area:"Longerich", addr:"Graseggerstraße 105, 50737 Köln", lat:50.9921, lon:6.9067, note:"Notfallversorgung / ZNA.", src:"https://www.cellitinnenhaeuser.de/"},
+  {cat:"ZNA", name:"Cellitinnen-Krankenhaus St. Hildegardis", area:"Lindenthal", addr:"Bachemer Str. 29–33, 50931 Köln", lat:50.9318, lon:6.9244, note:"Notfallversorgung.", src:"https://kliniknrw.de/"},
+  {cat:"ZNA", name:"Cellitinnen-Krankenhaus St. Vinzenz", area:"Nippes", addr:"Merheimer Str. 221–223, 50733 Köln", lat:50.9704, lon:6.9568, note:"Notfallversorgung.", src:"https://kliniknrw.de/"},
+  {cat:"ZNA", name:"Cellitinnen-Krankenhaus St. Antonius", area:"Bayenthal", addr:"Schillerstraße 23, 50968 Köln", lat:50.9125, lon:6.9680, note:"Krankenhausstandort / Innere & Kardiologie.", src:"https://www.cellitinnenhaeuser.de/"},
+  {cat:"ZNA", name:"Krankenhaus Köln-Merheim", area:"Merheim", addr:"Ostmerheimer Str. 200, 51109 Köln", lat:50.9445, lon:7.0575, note:"Zentrale Notaufnahme / Überregionales Traumazentrum.", src:"https://www.kliniken-koeln.de/"},
+  {cat:"ZNA", name:"Krankenhaus Köln-Holweide", area:"Holweide", addr:"Neufelder Str. 32, 51067 Köln", lat:50.9711, lon:7.0378, note:"Zentrale Notaufnahme / Perinatalzentrum.", src:"https://www.kliniken-koeln.de/"},
+  {cat:"ZNA", name:"Kinderkrankenhaus Amsterdamer Straße", area:"Niehl", addr:"Amsterdamer Str. 59, 50735 Köln", lat:50.9658, lon:6.9686, note:"Pädiatrische Notaufnahme / Kinderklinik.", src:"https://www.kliniken-koeln.de/"},
+  {cat:"ZNA", name:"Krankenhaus Porz am Rhein", area:"Porz", addr:"Urbacher Weg 19, 51149 Köln", lat:50.8792, lon:7.0620, note:"Zentrale Notaufnahme / Erwachsenen- & Kinderklinik.", src:"https://www.kh-porz.de/"},
+  {cat:"ZNA", name:"St. Elisabeth-Krankenhaus Köln-Hohenlind", area:"Lindenthal", addr:"Werthmannstraße 1, 50935 Köln", lat:50.9231, lon:6.9032, note:"Zentrale Notaufnahme.", src:"https://www.hohenlind.de/"},
+  {cat:"ZNA", name:"St. Marien-Hospital Köln", area:"Innenstadt", addr:"Kunibertskloster 11–13, 50668 Köln", lat:50.9463, lon:6.9602, note:"Notfallversorgung / Innere, Geriatrie & Pneumologie.", src:"https://www.st-marien-hospital.de/"},
+  {cat:"ZNA", name:"Evangelisches Krankenhaus Köln-Kalk", area:"Kalk", addr:"Buchforststraße 2, 51103 Köln", lat:50.9372, lon:6.9961, note:"Zentrale Notaufnahme.", src:"https://www.evkk.de/"},
+  {cat:"ZNA", name:"Eduardus-Krankenhaus Köln", area:"Deutz", addr:"Custodisstraße 3–17, 50679 Köln", lat:50.9315, lon:6.9733, note:"Notfallversorgung / Orthopädie & Chirurgie.", src:"https://www.eduardus.de/"},
+  {cat:"ZNA", name:"St. Agatha Krankenhaus Köln-Niehl", area:"Niehl", addr:"Feldgärtenstraße 97, 50735 Köln", lat:50.9840, lon:6.9635, note:"Notfallversorgung / Chirurgie, Innere & Seelische Gesundheit.", src:"https://www.st-agatha-krankenhaus.de/"},
+  {cat:"ZNA", name:"LVR-Klinik Köln", area:"Merheim", addr:"Wilhelm-Griesinger-Straße 23, 51109 Köln", lat:50.9472, lon:7.0511, note:"Psychiatrische Notfallaufnahme.", src:"https://klinik-koeln.lvr.de/"},
+  {cat:"ZNA", name:"Alexianer Krankenhaus Köln", area:"Porz-Ensen", addr:"Kölner Straße 64, 51149 Köln", lat:50.8891, lon:7.0264, note:"Psychiatrische Notfallaufnahme.", src:"https://www.alexianer-koeln.de/"},
+  {cat:"ZNA", name:"Klinik Alteburger Straße", area:"Südstadt", addr:"Alteburger Str. 8–12, 50678 Köln", lat:50.9208, lon:6.9605, note:"Fachkrankenhaus für Psychiatrie, Psychotherapie und Psychosomatik.", src:"https://www.alteburger.de/"},
 
   // Dialyse
-  {cat:"Dialyse",name:"KfH-Nierenzentrum Köln-Porz",area:"Porz",addr:"Urbacher Weg 19, 51149 Köln",note:"KfH Dialysezentrum.",src:"https://www.kfh.de/"},
-  {cat:"Dialyse",name:"KfH-Nierenzentrum Köln-Bayenthal",area:"Bayenthal",addr:"Bernhardstr. 110, 50968 Köln",note:"KfH Dialysezentrum.",src:"https://www.kfh.de/"},
-  {cat:"Dialyse",name:"KfH-Nierenzentrum Köln-Mülheim",area:"Mülheim",addr:"Böckingstr. 54–56, 51063 Köln",note:"KfH Dialysezentrum.",src:"https://www.kfh.de/"},
-  {cat:"Dialyse",name:"KfH-Nierenzentrum Köln-Lindenthal",area:"Lindenthal",addr:"Kerpener Str. 60, 50937 Köln",note:"KfH Dialysezentrum.",src:"https://www.kfh.de/"},
-  {cat:"Dialyse",name:"KfH-Nierenzentrum Köln-Merheim",area:"Merheim",addr:"Ostmerheimer Str. 200, 51109 Köln",note:"KfH Dialysezentrum.",src:"https://www.kfh.de/"},
+  {cat:"Dialyse", name:"KfH-Nierenzentrum Köln-Porz", area:"Porz", addr:"Urbacher Weg 19, 51149 Köln", lat:50.8792, lon:7.0620, note:"KfH Dialysezentrum.", src:"https://www.kfh.de/"},
+  {cat:"Dialyse", name:"KfH-Nierenzentrum Köln-Bayenthal", area:"Bayenthal", addr:"Bernhardstr. 110, 50968 Köln", lat:50.9102, lon:6.9663, note:"KfH Dialysezentrum.", src:"https://www.kfh.de/"},
+  {cat:"Dialyse", name:"KfH-Nierenzentrum Köln-Mülheim", area:"Mülheim", addr:"Böckingstr. 54–56, 51063 Köln", lat:50.9678, lon:7.0041, note:"KfH Dialysezentrum.", src:"https://www.kfh.de/"},
+  {cat:"Dialyse", name:"KfH-Nierenzentrum Köln-Lindenthal", area:"Lindenthal", addr:"Kerpener Str. 60, 50937 Köln", lat:50.9240, lon:6.9288, note:"KfH Dialysezentrum.", src:"https://www.kfh.de/"},
+  {cat:"Dialyse", name:"KfH-Nierenzentrum Köln-Merheim", area:"Merheim", addr:"Ostmerheimer Str. 200, 51109 Köln", lat:50.9445, lon:7.0575, note:"KfH Dialysezentrum.", src:"https://www.kfh.de/"},
 
   // Wachen
-  {cat:"Wachen",name:"Feuer- und Rettungswache 1 Innenstadt",area:"Innenstadt",addr:"Agrippastraße 18, 50676 Köln",note:"Berufsfeuerwehr Köln.",src:"https://www.feuerwehr-nrw.de/koeln"},
-  {cat:"Wachen",name:"Feuer- und Rettungswache 2 Marienburg",area:"Marienburg",addr:"Schillingsrotter Weg 8–12, 50968 Köln",note:"Berufsfeuerwehr Köln.",src:"https://www.feuerwehr-nrw.de/koeln"},
-  {cat:"Wachen",name:"Feuer- und Rettungswache 3 Lindenthal",area:"Lindenthal",addr:"Gleueler Str. 223–225, 50935 Köln",note:"Berufsfeuerwehr Köln.",src:"https://www.feuerwehr-nrw.de/koeln"},
-  {cat:"Wachen",name:"Feuer- und Rettungswache 4 Ehrenfeld",area:"Ehrenfeld",addr:"Äußere Kanalstr. 67, 50827 Köln",note:"Berufsfeuerwehr Köln.",src:"https://www.feuerwehr-nrw.de/koeln"},
-  {cat:"Wachen",name:"Feuer- und Rettungswache 5 Weidenpesch",area:"Weidenpesch",addr:"Scheibenstr. 13, 50737 Köln",note:"Berufsfeuerwehr Köln.",src:"https://www.feuerwehr-nrw.de/koeln"},
-  {cat:"Wachen",name:"Feuer- und Rettungswache 6 Chorweiler",area:"Chorweiler",addr:"Volkhovener Weg 184, 50765 Köln",note:"Berufsfeuerwehr Köln.",src:"https://www.feuerwehr-nrw.de/koeln"},
-  {cat:"Wachen",name:"Feuer- und Rettungswache 7 Porz",area:"Porz",addr:"Kaiserstr. 69, 51145 Köln",note:"Berufsfeuerwehr Köln.",src:"https://www.feuerwehr-nrw.de/koeln"},
-  {cat:"Wachen",name:"Feuer- und Rettungswache 8 Ostheim",area:"Ostheim",addr:"Hardtgenbuscher Kirchweg 100, 51107 Köln",note:"Berufsfeuerwehr Köln.",src:"https://www.feuerwehr-nrw.de/koeln"},
-  {cat:"Wachen",name:"Feuer- und Rettungswache 9 Mülheim",area:"Mülheim",addr:"Bergisch Gladbacher Str. 179, 51063 Köln",note:"Berufsfeuerwehr Köln.",src:"https://www.feuerwehr-nrw.de/koeln"},
-  {cat:"Wachen",name:"Feuer- und Rettungswache 10 Kalk",area:"Kalk",addr:"Gummersbacher Str. 33, 51103 Köln",note:"Berufsfeuerwehr Köln.",src:"https://www.feuerwehr-nrw.de/koeln"},
-  {cat:"Wachen",name:"Rettungswache 12 Rodenkirchen",area:"Rodenkirchen",addr:"Schillingsrotter Str. 36, 50996 Köln",note:"Rettungswache.",src:"https://www.feuerwehr-nrw.de/koeln"},
-  {cat:"Wachen",name:"Feuer- und Rettungswache 14 Lövenich",area:"Lövenich",addr:"Richard-Wagner-Str. 26–32, 50859 Köln",note:"Berufsfeuerwehr Köln.",src:"https://www.feuerwehr-nrw.de/koeln"},
-  {cat:"Wachen",name:"Rettungswache 16 Esch",area:"Esch",addr:"Weiterstr. 4, 50765 Köln",note:"Rettungswache.",src:"https://www.feuerwehr-nrw.de/koeln"},
-  {cat:"Wachen",name:"Rettungswache 17 Zündorf",area:"Zündorf",addr:"Unterm Berg 19, 51143 Köln",note:"Rettungswache.",src:"https://www.feuerwehr-nrw.de/koeln"},
-  {cat:"Wachen",name:"Rettungswache 18 Krankenhaus Merheim",area:"Merheim",addr:"Ostmerheimer Str. 200, 51109 Köln",note:"Rettungswache.",src:"https://www.feuerwehr-nrw.de/koeln"},
-  {cat:"Wachen",name:"Rettungswache 19 Dellbrück",area:"Dellbrück",addr:"Urnenstr. 9, 51069 Köln",note:"Rettungswache.",src:"https://www.feuerwehr-nrw.de/koeln"},
+  {cat:"Wachen", name:"Feuer- und Rettungswache 1 Innenstadt", area:"Innenstadt", addr:"Agrippastraße 18, 50676 Köln", lat:50.9328, lon:6.9535, note:"Berufsfeuerwehr Köln.", src:"https://www.feuerwehr-nrw.de/koeln"},
+  {cat:"Wachen", name:"Feuer- und Rettungswache 2 Marienburg", area:"Marienburg", addr:"Schillingsrotter Weg 8–12, 50968 Köln", lat:50.8987, lon:6.9731, note:"Berufsfeuerwehr Köln.", src:"https://www.feuerwehr-nrw.de/koeln"},
+  {cat:"Wachen", name:"Feuer- und Rettungswache 3 Lindenthal", area:"Lindenthal", addr:"Gleueler Str. 223–225, 50935 Köln", lat:50.9251, lon:6.9112, note:"Berufsfeuerwehr Köln.", src:"https://www.feuerwehr-nrw.de/koeln"},
+  {cat:"Wachen", name:"Feuer- und Rettungswache 4 Ehrenfeld", area:"Ehrenfeld", addr:"Äußere Kanalstr. 67, 50827 Köln", lat:50.9579, lon:6.8993, note:"Berufsfeuerwehr Köln.", src:"https://www.feuerwehr-nrw.de/koeln"},
+  {cat:"Wachen", name:"Feuer- und Rettungswache 5 Weidenpesch", area:"Weidenpesch", addr:"Scheibenstr. 13, 50737 Köln", lat:50.9782, lon:6.9531, note:"Berufsfeuerwehr Köln.", src:"https://www.feuerwehr-nrw.de/koeln"},
+  {cat:"Wachen", name:"Feuer- und Rettungswache 6 Chorweiler", area:"Chorweiler", addr:"Volkhovener Weg 184, 50765 Köln", lat:51.0189, lon:6.8932, note:"Berufsfeuerwehr Köln.", src:"https://www.feuerwehr-nrw.de/koeln"},
+  {cat:"Wachen", name:"Feuer- und Rettungswache 7 Porz", area:"Porz", addr:"Kaiserstr. 69, 51145 Köln", lat:50.8841, lon:7.0673, note:"Berufsfeuerwehr Köln.", src:"https://www.feuerwehr-nrw.de/koeln"},
+  {cat:"Wachen", name:"Feuer- und Rettungswache 8 Ostheim", area:"Ostheim", addr:"Hardtgenbuscher Kirchweg 100, 51107 Köln", lat:50.9320, lon:7.0392, note:"Berufsfeuerwehr Köln.", src:"https://www.feuerwehr-nrw.de/koeln"},
+  {cat:"Wachen", name:"Feuer- und Rettungswache 9 Mülheim", area:"Mülheim", addr:"Bergisch Gladbacher Str. 179, 51063 Köln", lat:50.9667, lon:7.0125, note:"Berufsfeuerwehr Köln.", src:"https://www.feuerwehr-nrw.de/koeln"},
+  {cat:"Wachen", name:"Feuer- und Rettungswache 10 Kalk", area:"Kalk", addr:"Gummersbacher Str. 33, 51103 Köln", lat:50.9388, lon:6.9854, note:"Berufsfeuerwehr Köln.", src:"https://www.feuerwehr-nrw.de/koeln"},
+  {cat:"Wachen", name:"Rettungswache 12 Rodenkirchen", area:"Rodenkirchen", addr:"Schillingsrotter Str. 36, 50996 Köln", lat:50.8894, lon:6.9868, note:"Rettungswache.", src:"https://www.feuerwehr-nrw.de/koeln"},
+  {cat:"Wachen", name:"Feuer- und Rettungswache 14 Lövenich", area:"Lövenich", addr:"Richard-Wagner-Str. 26–32, 50859 Köln", lat:50.9379, lon:6.8321, note:"Berufsfeuerwehr Köln.", src:"https://www.feuerwehr-nrw.de/koeln"},
+  {cat:"Wachen", name:"Rettungswache 16 Esch", area:"Esch", addr:"Weiterstr. 4, 50765 Köln", lat:51.0112, lon:6.8584, note:"Rettungswache.", src:"https://www.feuerwehr-nrw.de/koeln"},
+  {cat:"Wachen", name:"Rettungswache 17 Zündorf", area:"Zündorf", addr:"Unterm Berg 19, 51143 Köln", lat:50.8711, lon:7.0435, note:"Rettungswache.", src:"https://www.feuerwehr-nrw.de/koeln"},
+  {cat:"Wachen", name:"Rettungswache 18 Krankenhaus Merheim", area:"Merheim", addr:"Ostmerheimer Str. 200, 51109 Köln", lat:50.9445, lon:7.0575, note:"Rettungswache.", src:"https://www.feuerwehr-nrw.de/koeln"},
+  {cat:"Wachen", name:"Rettungswache 19 Dellbrück", area:"Dellbrück", addr:"Urnenstr. 9, 51069 Köln", lat:50.9785, lon:7.0722, note:"Rettungswache.", src:"https://www.feuerwehr-nrw.de/koeln"},
 
   // Weitere
-  {cat:"Weitere",name:"Uniklinik – HNO / Augenklinik",area:"Lindenthal",addr:"Joseph-Stelzmann-Str. 50, 50931 Köln",note:"Offizielle Navigationsadresse für HNO und Augenklinik.",src:"https://www.uk-koeln.de/kliniken-institute-und-zentren/zentrale-notaufnahme/"},
-  {cat:"Weitere",name:"Uniklinik – Frauenklinik",area:"Lindenthal",addr:"Robert-Koch-Str. 10, 50931 Köln",note:"Offizielle Navigationsadresse der Frauenklinik.",src:"https://www.uk-koeln.de/kliniken-institute-und-zentren/zentrale-notaufnahme/"},
-  {cat:"Weitere",name:"Uniklinik – KTW/Bettenhaus-Anfahrt",area:"Lindenthal",addr:"Joseph-Stelzmann-Str. 22, 50931 Köln",note:"Offizielle Krankenwagenanfahrt laut Uniklinik.",src:"https://www.uk-koeln.de/kliniken-institute-und-zentren/zentrale-notaufnahme/"}
+  {cat:"Weitere", name:"Uniklinik – HNO / Augenklinik", area:"Lindenthal", addr:"Joseph-Stelzmann-Str. 50, 50931 Köln", lat:50.9255, lon:6.9272, note:"Offizielle Navigationsadresse für HNO und Augenklinik.", src:"https://www.uk-koeln.de/"},
+  {cat:"Weitere", name:"Uniklinik – Frauenklinik", area:"Lindenthal", addr:"Robert-Koch-Str. 10, 50931 Köln", lat:50.9231, lon:6.9259, note:"Offizielle Navigationsadresse der Frauenklinik.", src:"https://www.uk-koeln.de/"},
+  {cat:"Weitere", name:"Uniklinik – KTW/Bettenhaus-Anfahrt", area:"Lindenthal", addr:"Joseph-Stelzmann-Str. 22, 50931 Köln", lat:50.9261, lon:6.9281, note:"Offizielle Krankenwagenanfahrt laut Uniklinik.", src:"https://www.uk-koeln.de/"}
 ];
 
 const specialtyData = [
@@ -226,25 +249,64 @@ const specialtyData = [
    specialties:["Psychiatrie","Psychotherapie","Psychosomatik"]}
 ];
 
-// Helper & Modal Steuerung
+// Helper & Modal Steuerung mit Koordinaten
 const navModal = document.getElementById("navModal");
 const modalAddr = document.getElementById("modalAddr");
 const gmapsBtn = document.getElementById("gmapsBtn");
 const amapsBtn = document.getElementById("amapsBtn");
 const closeModal = document.getElementById("closeModal");
 
-function openNavModal(addr){
-  modalAddr.textContent = addr;
-  gmapsBtn.href = "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(addr);
-  amapsBtn.href = "https://maps.apple.com/?daddr=" + encodeURIComponent(addr);
+function openNavModal(lat, lon, name, addr){
+  modalAddr.innerHTML = `<b>${name}</b><br>${addr}<br><span style="font-size:11px;color:#86efac;">GPS: ${lat}, ${lon}</span>`;
+  gmapsBtn.href = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}`;
+  amapsBtn.href = `https://maps.apple.com/?daddr=${lat},${lon}`;
   navModal.style.display = "flex";
 }
+
+// Globaler Aufruf für Map Pop-up Buttons
+window.triggerNavModal = function(lat, lon, name, addr) {
+  openNavModal(lat, lon, name, addr);
+};
 
 closeModal.addEventListener("click", () => navModal.style.display = "none");
 gmapsBtn.addEventListener("click", () => navModal.style.display = "none");
 amapsBtn.addEventListener("click", () => navModal.style.display = "none");
 navModal.addEventListener("click", (e) => {
   if (e.target === navModal) navModal.style.display = "none";
+});
+
+// --- KARTE INITIALISIEREN ---
+const map = L.map('map').setView([50.9375, 6.9603], 11);
+
+// CARTO Dark Matter Tiles für passenden Dark-Mode-Look
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+  subdomains: 'abcd',
+  maxZoom: 19
+}).addTo(map);
+
+// Standorte ohne Duplikate auf der Karte platzieren
+const allLocations = [];
+const seenCoords = new Set();
+
+[...data, ...specialtyData].forEach(item => {
+  const key = `${item.lat},${item.lon}`;
+  if (!seenCoords.has(key)) {
+    seenCoords.add(key);
+    allLocations.push(item);
+  }
+});
+
+allLocations.forEach(loc => {
+  const popupHtml = `
+    <div class="map-popup-title">${loc.name}</div>
+    <div class="map-popup-addr">${loc.addr}</div>
+    <button class="btn route" style="width:100%;padding:8px;font-size:12px;" 
+      onclick="triggerNavModal(${loc.lat}, ${loc.lon}, '${loc.name.replace(/'/g, "\\'")}', '${loc.addr.replace(/'/g, "\\'")}')">
+      Navigation
+    </button>
+  `;
+  L.marker([loc.lat, loc.lon]).addTo(map).bindPopup(popupHtml);
 });
 
 function normalizeText(v){
@@ -289,14 +351,14 @@ function renderSpecialties(){
       <div class="addr">${h.addr}</div>
       <div class="specialty-list"><b>Fachrichtungen:</b> ${h.specialties.join(" · ")}</div>
       <div class="actions">
-        <button class="btn route nav-btn" data-address="${h.addr}">Navigation</button>
+        <button class="btn route nav-btn" data-lat="${h.lat}" data-lon="${h.lon}" data-name="${h.name}" data-addr="${h.addr}">Navigation</button>
         <button class="btn copy" data-address="${h.addr}">Adresse kopieren</button>
       </div>`;
     grid.appendChild(card);
   });
 
   grid.querySelectorAll(".nav-btn").forEach(btn => btn.addEventListener("click", () => {
-    openNavModal(btn.dataset.address);
+    openNavModal(btn.dataset.lat, btn.dataset.lon, btn.dataset.name, btn.dataset.addr);
   }));
 
   grid.querySelectorAll(".copy").forEach(btn=>btn.addEventListener("click",async()=>{
@@ -345,14 +407,14 @@ function render(){
       <div class="addr">${x.addr}</div>
       <div class="note">${x.note}</div>
       <div class="actions">
-        <button class="btn route nav-btn" data-address="${x.addr}">Navigation</button>
+        <button class="btn route nav-btn" data-lat="${x.lat}" data-lon="${x.lon}" data-name="${x.name}" data-addr="${x.addr}">Navigation</button>
         <button class="btn copy" data-address="${x.addr}">Adresse kopieren</button>
       </div>`;
     grid.appendChild(card);
   }
 
   grid.querySelectorAll(".nav-btn").forEach(btn => btn.addEventListener("click", () => {
-    openNavModal(btn.dataset.address);
+    openNavModal(btn.dataset.lat, btn.dataset.lon, btn.dataset.name, btn.dataset.addr);
   }));
 
   grid.querySelectorAll(".copy").forEach(btn => btn.addEventListener("click", async()=>{
