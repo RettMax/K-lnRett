@@ -25,40 +25,49 @@ main{max-width:1200px;margin:auto;padding:24px 20px 50px}
 .tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:8px 0 22px}
 .tab{border:1px solid var(--line);background:var(--panel);color:var(--text);padding:14px 12px;border-radius:12px;font-weight:700;cursor:pointer}
 .tab.active{background:var(--accent);border-color:var(--accent)}
-.search{width:100%;padding:14px 16px;border:1px solid var(--line);background:#0f172a;color:white;border-radius:12px;font-size:16px;margin-bottom:16px;outline:none}
+
+.search-controls{display:flex;gap:10px;align-items:stretch;margin-bottom:8px}
+.search-controls .search{margin-bottom:0;flex:1}
+.search{width:100%;padding:14px 16px;border:1px solid var(--line);background:#0f172a;color:white;border-radius:12px;font-size:16px;outline:none}
 .search:focus{border-color:var(--accent2)}
+.location-btn{white-space:nowrap;border:1px solid var(--line);background:#1e293b;color:white;border-radius:12px;padding:0 17px;font-weight:700;cursor:pointer}
+.location-btn:hover{background:#263449}
+.location-status{font-size:12px;color:var(--muted);margin-bottom:18px}
+
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
 .card{background:linear-gradient(180deg,var(--panel),#0f172a);border:1px solid var(--line);border-radius:15px;padding:17px;display:flex;flex-direction:column;min-height:180px}
 .card h3{margin:0 0 7px;font-size:17px}.area{color:#fb7185;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.distance{color:#86efac;font-size:12px;font-weight:700;margin:-3px 0 8px}
 .addr{color:var(--muted);font-size:14px;line-height:1.45;margin:8px 0 14px}
 .note{font-size:12px;color:#cbd5e1;background:#111c2e;border-radius:9px;padding:8px 12px;margin-bottom:12px;display:inline-block}
+.specialty-list{font-size:12px;color:#cbd5e1;line-height:1.45;margin-bottom:12px;background:#0b1322;padding:9px 11px;border-radius:8px;border:1px solid #1a2638}
 .actions{margin-top:auto;display:flex;gap:8px}
 .btn{flex:1;text-align:center;text-decoration:none;border-radius:10px;padding:11px 9px;font-weight:700;font-size:14px;border:none;cursor:pointer}
 .route{background:var(--accent);color:white}.copy{background:#1e293b;color:white;border:1px solid var(--line);cursor:pointer}
 .empty{padding:30px;text-align:center;color:var(--muted);display:none}
-footer{max-width:1200px;margin:0 auto;padding:0 20px 30px;color:#64748b;font-size:12px;line-height:1.5}
-.warning{border:1px solid #713f12;background:#27170b;color:#fed7aa;padding:12px 14px;border-radius:12px;margin:0 0 20px;font-size:13px}
 
 /* Karten-Sektion Styling */
 .map-section{margin:34px 0;padding-top:28px;border-top:1px solid var(--line)}
 .map-section h2{margin:0 0 7px;font-size:25px}
+.section-sub{margin:0 0 17px;color:var(--muted)}
 #map{height:420px;width:100%;border-radius:16px;border:1px solid var(--line);z-index:1;margin-top:15px}
 .leaflet-popup-content-wrapper, .leaflet-popup-tip{background:var(--panel2);color:var(--text);border:1px solid var(--line)}
 .leaflet-popup-content{margin:14px;font-family:Inter,Arial,sans-serif}
 .map-popup-title{font-weight:700;font-size:15px;margin-bottom:4px;color:white}
 .map-popup-addr{font-size:12px;color:var(--muted);margin-bottom:10px}
 
-.specialties{margin-top:34px;padding-top:28px;border-top:1px solid var(--line)}
-.specialties h2{margin:0 0 7px;font-size:25px}
-.section-sub{margin:0 0 17px;color:var(--muted)}
-.specialty-controls{display:flex;gap:10px;align-items:stretch}
-.specialty-controls .search{margin-bottom:10px}
-.location-btn{margin-bottom:10px;white-space:nowrap;border:1px solid var(--line);background:#1e293b;color:white;border-radius:12px;padding:0 17px;font-weight:700;cursor:pointer}
-.location-btn:hover{background:#263449}
-.specialty-status{font-size:13px;color:#cbd5e1;margin:0 0 15px;padding:10px 12px;background:#111c2e;border-radius:10px}
-.distance{color:#86efac;font-size:12px;font-weight:700;margin:-3px 0 8px}
-.specialty-list{font-size:13px;color:#cbd5e1;line-height:1.5;margin-bottom:12px}
-@media(max-width:650px){.tabs{grid-template-columns:repeat(2,1fr)}.hero h1{font-size:28px}.grid{grid-template-columns:1fr}.top{padding:14px 16px}main{padding:18px 16px 40px}.specialty-controls{flex-direction:column}.location-btn{padding:12px}.specialty-controls .search{margin-bottom:0}}
+footer{max-width:1200px;margin:0 auto;padding:0 20px 30px;color:#64748b;font-size:12px;line-height:1.5}
+.warning{border:1px solid #713f12;background:#27170b;color:#fed7aa;padding:12px 14px;border-radius:12px;margin:0 0 20px;font-size:13px}
+
+@media(max-width:650px){
+  .tabs{grid-template-columns:repeat(2,1fr)}
+  .hero h1{font-size:28px}
+  .grid{grid-template-columns:1fr}
+  .top{padding:14px 16px}
+  main{padding:18px 16px 40px}
+  .search-controls{flex-direction:column}
+  .location-btn{padding:12px}
+}
 
 /* Modal für Navigations-Auswahl */
 .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.75);backdrop-filter:blur(5px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px}
@@ -100,32 +109,22 @@ footer{max-width:1200px;margin:0 auto;padding:0 20px 30px;color:#64748b;font-siz
     <button class="tab" data-cat="Weitere">Weitere</button>
   </nav>
 
-  <input id="search" class="search" type="search" placeholder="Ziel, Stadtteil oder Adresse suchen …">
+  <div class="search-controls">
+    <input id="search" class="search" type="search" placeholder="Ziel, Stadtteil, Adresse oder Fachrichtung (z. B. Kardiologie) suchen …">
+    <button id="locationBtn" class="location-btn">Standort verwenden</button>
+  </div>
+  <div id="locationStatus" class="location-status">
+    Standort nicht freigegeben – Entfernung wird nicht berechnet.
+  </div>
+
   <div id="grid" class="grid"></div>
   <div id="empty" class="empty">Keine passenden Ziele gefunden.</div>
 
-  <!-- NEU: Interaktive Karte zwischen den beiden Flächen -->
+  <!-- Interaktive Karte -->
   <section class="map-section">
     <h2>Übersichtskarte</h2>
     <p class="section-sub">Alle hinterlegten Rettungsdienstziele, Notaufnahmen und Wachen im Kölner Stadtgebiet auf einen Blick.</p>
     <div id="map"></div>
-  </section>
-
-  <section class="specialties">
-    <h2>Zielfachrichtung finden</h2>
-    <p class="section-sub">Fachrichtung eingeben – die Website zeigt passende Kölner Krankenhäuser nach Entfernung zur gewählten Position.</p>
-
-    <div class="specialty-controls">
-      <input id="specialty" class="search" type="search"
-             placeholder="z. B. Kardiologie, Neurologie, Augenklinik, Pädiatrie …">
-      <button id="locationBtn" class="location-btn">Standort verwenden</button>
-    </div>
-
-    <div id="specialtyStatus" class="specialty-status">
-      Ohne Standort werden passende Häuser zunächst nach hinterlegter Reihenfolge angezeigt.
-    </div>
-    <div id="specialtyGrid" class="grid"></div>
-    <div id="specialtyEmpty" class="empty">Keine passende Fachrichtung gefunden.</div>
   </section>
 </main>
 
@@ -192,9 +191,9 @@ const data = [
 ];
 
 const specialtyData = [
-  {name:"Uniklinik Köln", addr:"Kerpener Str. 62, 50937 Köln", lat:50.9242, lon:6.9297,
+  {name:"Uniklinik Köln", addr:"Kerpener Str. 62, 50937 Köln", lat:50.92292223864161, lon:6.916368667068342,
    specialties:["Allgemeinmedizin","Anästhesiologie","Augenheilkunde","Chirurgie","Dermatologie","Gynäkologie","HNO","Innere Medizin","Kardiologie","Neurologie","Neurochirurgie","Nephrologie","Onkologie","Orthopädie","Psychiatrie","Urologie","Pädiatrie"]},
-  {name:"Krankenhaus Köln-Merheim", addr:"Ostmerheimer Str. 200, 51109 Köln", lat:50.9445, lon:7.0575,
+  {name:"Krankenhaus Köln-Merheim", addr:"Ostmerheimer Str. 200, 51109 Köln", lat:50.93928370803274, lon:7.050980414959772,
    specialties:["Anästhesiologie","Chirurgie","Gynäkologie","Innere Medizin","Kardiologie","Neurologie","Neurochirurgie","Orthopädie","Radiologie","Urologie","Traumazentrum","Pneumologie"]},
   {name:"Krankenhaus Köln-Holweide", addr:"Neufelder Str. 32, 51067 Köln", lat:50.9711, lon:7.0378,
    specialties:["Anästhesiologie","Chirurgie","Frauenheilkunde","Gynäkologie","Geburtshilfe","HNO","Innere Medizin","Kinder- und Jugendpsychiatrie","Radiologie","Urologie","Perinatalzentrum"]},
@@ -234,7 +233,19 @@ const specialtyData = [
    specialties:["Psychiatrie","Psychotherapie","Psychosomatik"]}
 ];
 
-// Helper & Modal Steuerung mit Koordinaten
+// Verknüpfe die Fachrichtungen dynamisch mit den ZNA-Einträgen in `data`
+data.forEach(item => {
+  if (item.cat === "ZNA") {
+    const specMatch = specialtyData.find(s => 
+      item.name.toLowerCase().includes(s.name.toLowerCase()) || 
+      s.name.toLowerCase().includes(item.name.toLowerCase()) ||
+      (Math.abs(item.lat - s.lat) < 0.005 && Math.abs(item.lon - s.lon) < 0.005)
+    );
+    item.specialties = specMatch ? specMatch.specialties : [];
+  }
+});
+
+// Helper & Modal Steuerung
 const navModal = document.getElementById("navModal");
 const modalAddr = document.getElementById("modalAddr");
 const gmapsBtn = document.getElementById("gmapsBtn");
@@ -248,7 +259,6 @@ function openNavModal(lat, lon, name, addr){
   navModal.style.display = "flex";
 }
 
-// Globaler Aufruf für Map Pop-up Buttons
 window.triggerNavModal = function(lat, lon, name, addr) {
   openNavModal(lat, lon, name, addr);
 };
@@ -263,81 +273,97 @@ navModal.addEventListener("click", (e) => {
 // --- KARTE INITIALISIEREN ---
 const map = L.map('map').setView([50.9375, 6.9603], 11);
 
-// CARTO Dark Matter Tiles für passenden Dark-Mode-Look
-L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?key=cb1_3u3g_1_f96f1132efea9e302ef77176', {
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
   attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
   subdomains: 'abcd',
   maxZoom: 19
 }).addTo(map);
 
-// Standorte ohne Duplikate auf der Karte platzieren
-const allLocations = [];
+// Pins aus `data` auf der Karte setzen
 const seenCoords = new Set();
-
-[...data, ...specialtyData].forEach(item => {
-  const key = `${item.lat},${item.lon}`;
+data.forEach(loc => {
+  const key = `${loc.lat},${loc.lon}`;
   if (!seenCoords.has(key)) {
     seenCoords.add(key);
-    allLocations.push(item);
+    const popupHtml = `
+      <div class="map-popup-title">${loc.name}</div>
+      <div class="map-popup-addr">${loc.addr}</div>
+      <button class="btn route" style="width:100%;padding:8px;font-size:12px;" 
+        onclick="triggerNavModal(${loc.lat}, ${loc.lon}, '${loc.name.replace(/'/g, "\\'")}', '${loc.addr.replace(/'/g, "\\'")}')">
+        Navigation
+      </button>
+    `;
+    L.marker([loc.lat, loc.lon]).addTo(map).bindPopup(popupHtml);
   }
 });
 
-allLocations.forEach(loc => {
-  const popupHtml = `
-    <div class="map-popup-title">${loc.name}</div>
-    <div class="map-popup-addr">${loc.addr}</div>
-    <button class="btn route" style="width:100%;padding:8px;font-size:12px;" 
-      onclick="triggerNavModal(${loc.lat}, ${loc.lon}, '${loc.name.replace(/'/g, "\\'")}', '${loc.addr.replace(/'/g, "\\'")}')">
-      Navigation
-    </button>
-  `;
-  L.marker([loc.lat, loc.lon]).addTo(map).bindPopup(popupHtml);
-});
-
 function normalizeText(v){
-  return v.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+  return v ? v.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"") : "";
 }
+
 function distanceKm(a,b,c,d){
   const R=6371, rad=x=>x*Math.PI/180;
   const dLat=rad(c-a), dLon=rad(d-b);
   const x=Math.sin(dLat/2)**2+Math.cos(rad(a))*Math.cos(rad(c))*Math.sin(dLon/2)**2;
   return 2*R*Math.asin(Math.sqrt(x));
 }
-let userPosition=null;
 
-function renderSpecialties(){
-  const q=normalizeText(document.getElementById("specialty").value.trim());
-  const grid=document.getElementById("specialtyGrid");
-  const empty=document.getElementById("specialtyEmpty");
-  const status=document.getElementById("specialtyStatus");
-  let items=specialtyData.filter(h=>!q || h.specialties.some(f=>normalizeText(f).includes(q)));
+let userPosition = null;
+let category = "ZNA";
 
-  if(userPosition){
-    items=items.map(h=>({...h,dist:distanceKm(userPosition.lat,userPosition.lon,h.lat,h.lon)}))
-      .sort((a,b)=>a.dist-b.dist);
-    status.textContent=items.length
-      ? `${items.length} passende Häuser – nach Entfernung zu deinem Standort sortiert.`
-      : "Keine passende Fachrichtung gefunden.";
-  }else{
-    status.textContent=items.length
-      ? "Standort nicht freigegeben – Ergebnisse sind nicht nach Entfernung sortiert."
-      : "Keine passende Fachrichtung gefunden.";
+const grid = document.getElementById("grid");
+const empty = document.getElementById("empty");
+const search = document.getElementById("search");
+const locationBtn = document.getElementById("locationBtn");
+const locationStatus = document.getElementById("locationStatus");
+
+function render(){
+  const q = normalizeText(search.value.trim());
+
+  // Filterung nach Kategorie und Suchbegriff (Name, Stadtteil, Adresse, Notiz & Fachrichtung)
+  let items = data.filter(x => {
+    if (x.cat !== category) return false;
+    if (!q) return true;
+
+    const matchName = normalizeText(x.name).includes(q);
+    const matchArea = normalizeText(x.area).includes(q);
+    const matchAddr = normalizeText(x.addr).includes(q);
+    const matchNote = normalizeText(x.note).includes(q);
+    const matchSpec = x.specialties ? x.specialties.some(s => normalizeText(s).includes(q)) : false;
+
+    return matchName || matchArea || matchAddr || matchNote || matchSpec;
+  });
+
+  // Nach Entfernung sortieren, wenn Standort bekannt ist
+  if (userPosition) {
+    items = items.map(x => ({
+      ...x,
+      dist: distanceKm(userPosition.lat, userPosition.lon, x.lat, x.lon)
+    })).sort((a,b) => a.dist - b.dist);
   }
 
-  grid.innerHTML="";
-  empty.style.display=items.length?"none":"block";
-  items.forEach(h=>{
-    const card=document.createElement("article");
-    card.className="card";
-    card.innerHTML=`
-      <div class="area">Krankenhaus</div>
-      <h3>${h.name}</h3>
-      ${h.dist!==undefined?`<div class="distance">${h.dist.toFixed(1)} km Luftlinie</div>`:""}
-      <div class="addr">${h.addr}</div>
-      <div class="specialty-list"><b>Fachrichtungen:</b> ${h.specialties.join(" · ")}</div>
+  grid.innerHTML = "";
+  empty.style.display = items.length ? "none" : "block";
+
+  items.forEach(x => {
+    const card = document.createElement("article");
+    card.className = "card";
+
+    let specsHtml = "";
+    if (x.specialties && x.specialties.length > 0) {
+      specsHtml = `<div class="specialty-list"><b>Fachrichtungen:</b> ${x.specialties.join(" · ")}</div>`;
+    }
+
+    card.innerHTML = `
+      <div class="area">${x.area}</div>
+      <h3>${x.name}</h3>
+      ${x.dist !== undefined ? `<div class="distance">${x.dist.toFixed(1)} km Luftlinie</div>` : ""}
+      <div class="addr">${x.addr}</div>
+      <div class="note">${x.note}</div>
+      ${specsHtml}
       <div class="actions">
-        <button class="btn route nav-btn" data-lat="${h.lat}" data-lon="${h.lon}" data-name="${h.name}" data-addr="${h.addr}">Navigation</button>
-        <button class="btn copy" data-address="${h.addr}">Adresse kopieren</button>
+        <button class="btn route nav-btn" data-lat="${x.lat}" data-lon="${x.lon}" data-name="${x.name.replace(/"/g, '&quot;')}" data-addr="${x.addr.replace(/"/g, '&quot;')}">Navigation</button>
+        <button class="btn copy" data-address="${x.addr.replace(/"/g, '&quot;')}">Adresse kopieren</button>
       </div>`;
     grid.appendChild(card);
   });
@@ -346,75 +372,44 @@ function renderSpecialties(){
     openNavModal(btn.dataset.lat, btn.dataset.lon, btn.dataset.name, btn.dataset.addr);
   }));
 
-  grid.querySelectorAll(".copy").forEach(btn=>btn.addEventListener("click",async()=>{
+  grid.querySelectorAll(".copy").forEach(btn => btn.addEventListener("click", async () => {
     await navigator.clipboard.writeText(btn.dataset.address);
-    const old=btn.textContent; btn.textContent="Kopiert"; setTimeout(()=>btn.textContent=old,1000);
+    const old = btn.textContent;
+    btn.textContent = "Kopiert";
+    setTimeout(() => btn.textContent = old, 1000);
   }));
 }
 
-document.getElementById("specialty").addEventListener("input",renderSpecialties);
-document.getElementById("locationBtn").addEventListener("click",()=>{
-  const status=document.getElementById("specialtyStatus");
-  if(!navigator.geolocation){
-    status.textContent="Dieser Browser unterstützt keine Standortabfrage.";
+// Event-Listener für Standort-Abfrage
+locationBtn.addEventListener("click", () => {
+  if (!navigator.geolocation) {
+    locationStatus.textContent = "Dieser Browser unterstützt keine Standortabfrage.";
     return;
   }
-  status.textContent="Standort wird abgefragt …";
+  locationStatus.textContent = "Standort wird abgefragt …";
   navigator.geolocation.getCurrentPosition(
-    pos=>{
-      userPosition={lat:pos.coords.latitude,lon:pos.coords.longitude};
-      renderSpecialties();
+    pos => {
+      userPosition = { lat: pos.coords.latitude, lon: pos.coords.longitude };
+      locationStatus.textContent = "Standort aktiv – Ergebnisse werden nach Entfernung sortiert.";
+      render();
     },
-    ()=>{
-      status.textContent="Standort konnte nicht abgerufen werden. Bitte Standortfreigabe im Browser erlauben.";
+    () => {
+      locationStatus.textContent = "Standort konnte nicht abgerufen werden. Bitte Freigabe im Browser erlauben.";
     },
-    {enableHighAccuracy:true,timeout:10000,maximumAge:60000}
+    { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
   );
 });
 
-let category = "ZNA";
-const grid = document.getElementById("grid");
-const empty = document.getElementById("empty");
-const search = document.getElementById("search");
-
-function render(){
-  const q = search.value.trim().toLowerCase();
-  const items = data.filter(x => x.cat === category &&
-    (!q || (x.name+" "+x.area+" "+x.addr).toLowerCase().includes(q)));
-  grid.innerHTML = "";
-  empty.style.display = items.length ? "none" : "block";
-  for(const x of items){
-    const card = document.createElement("article");
-    card.className = "card";
-    card.innerHTML = `
-      <div class="area">${x.area}</div>
-      <h3>${x.name}</h3>
-      <div class="addr">${x.addr}</div>
-      <div class="note">${x.note}</div>
-      <div class="actions">
-        <button class="btn route nav-btn" data-lat="${x.lat}" data-lon="${x.lon}" data-name="${x.name}" data-addr="${x.addr}">Navigation</button>
-        <button class="btn copy" data-address="${x.addr}">Adresse kopieren</button>
-      </div>`;
-    grid.appendChild(card);
-  }
-
-  grid.querySelectorAll(".nav-btn").forEach(btn => btn.addEventListener("click", () => {
-    openNavModal(btn.dataset.lat, btn.dataset.lon, btn.dataset.name, btn.dataset.addr);
-  }));
-
-  grid.querySelectorAll(".copy").forEach(btn => btn.addEventListener("click", async()=>{
-    await navigator.clipboard.writeText(btn.dataset.address);
-    const old = btn.textContent; btn.textContent = "Kopiert"; setTimeout(()=>btn.textContent=old,1000);
-  }));
-}
-
-document.querySelectorAll(".tab").forEach(btn => btn.addEventListener("click",()=>{
-  document.querySelectorAll(".tab").forEach(b=>b.classList.remove("active"));
-  btn.classList.add("active"); category=btn.dataset.cat; search.value=""; render();
+document.querySelectorAll(".tab").forEach(btn => btn.addEventListener("click", () => {
+  document.querySelectorAll(".tab").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  category = btn.dataset.cat;
+  search.value = "";
+  render();
 }));
+
 search.addEventListener("input", render);
 render();
-renderSpecialties();
 </script>
 </body>
 </html>
