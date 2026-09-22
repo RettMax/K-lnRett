@@ -58,8 +58,17 @@ header {
 }
 
 .brand {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Abstand zwischen Logo und Text */
   font-weight: 800;
   font-size: 21px;
+}
+
+.brand-logo {
+  height: 32px; /* Höhe des Logos – beliebig anpassbar */
+  width: auto;
+  object-fit: contain;
 }
 
 .brand span {
