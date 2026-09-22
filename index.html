@@ -27,9 +27,9 @@ main{max-width:1200px;margin:auto;padding:24px 20px 50px}
 .card{background:linear-gradient(180deg,var(--panel),#0f172a);border:1px solid var(--line);border-radius:15px;padding:17px;display:flex;flex-direction:column;min-height:180px}
 .card h3{margin:0 0 7px;font-size:17px}.area{color:#fb7185;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
 .addr{color:var(--muted);font-size:14px;line-height:1.45;margin:8px 0 14px}
-.note{font-size:12px;color:#cbd5e1;background:#111c2e;border-radius:999px;padding:8px 12px;margin-bottom:12px;display:inline-block}
+.note{font-size:12px;color:#cbd5e1;background:#111c2e;border-radius:9px;padding:8px 12px;margin-bottom:12px;display:inline-block}
 .actions{margin-top:auto;display:flex;gap:8px}
-.btn{flex:1;text-align:center;text-decoration:none;border-radius:10px;padding:11px 9px;font-weight:700;font-size:14px}
+.btn{flex:1;text-align:center;text-decoration:none;border-radius:10px;padding:11px 9px;font-weight:700;font-size:14px;border:none;cursor:pointer}
 .route{background:var(--accent);color:white}.copy{background:#1e293b;color:white;border:1px solid var(--line);cursor:pointer}
 .empty{padding:30px;text-align:center;color:var(--muted);display:none}
 footer{max-width:1200px;margin:0 auto;padding:0 20px 30px;color:#64748b;font-size:12px;line-height:1.5}
@@ -46,6 +46,19 @@ footer{max-width:1200px;margin:0 auto;padding:0 20px 30px;color:#64748b;font-siz
 .distance{color:#86efac;font-size:12px;font-weight:700;margin:-3px 0 8px}
 .specialty-list{font-size:13px;color:#cbd5e1;line-height:1.5;margin-bottom:12px}
 @media(max-width:650px){.specialty-controls{flex-direction:column}.location-btn{padding:12px}.specialty-controls .search{margin-bottom:0}}
+
+/* Modal für Navigations-Auswahl */
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.75);backdrop-filter:blur(5px);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal{background:var(--panel2);border:1px solid var(--line);border-radius:16px;padding:24px;max-width:380px;width:100%;box-shadow:0 20px 25px -5px rgba(0,0,0,.5);text-align:center}
+.modal h3{margin:0 0 8px;font-size:20px}
+.modal-addr{color:var(--muted);font-size:13px;line-height:1.4;margin:0 0 20px;word-break:break-word}
+.modal-buttons{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+.modal-buttons .btn{padding:14px;font-size:15px;display:block}
+.btn-gmaps{background:#4285F4;color:white}
+.btn-gmaps:hover{background:#3367d6}
+.btn-amaps{background:#2c2c2e;border:1px solid #444;color:white}
+.btn-amaps:hover{background:#3a3a3c}
+.modal-close{width:100%;background:#1e293b;border:1px solid var(--line)}
 </style>
 </head>
 <body>
@@ -95,6 +108,19 @@ footer{max-width:1200px;margin:0 auto;padding:0 20px 30px;color:#64748b;font-siz
     <div id="specialtyEmpty" class="empty">Keine passende Fachrichtung gefunden.</div>
   </section>
 </main>
+
+<!-- Modal für Kartenauswahl -->
+<div id="navModal" class="modal-overlay" style="display:none;">
+  <div class="modal">
+    <h3>Navigations-App wählen</h3>
+    <div id="modalAddr" class="modal-addr"></div>
+    <div class="modal-buttons">
+      <a id="gmapsBtn" class="btn btn-gmaps" target="_blank" rel="noopener">Google Maps</a>
+      <a id="amapsBtn" class="btn btn-amaps" target="_blank" rel="noopener">Apple Maps</a>
+    </div>
+    <button id="closeModal" class="btn modal-close">Abbrechen</button>
+  </div>
+</div>
 
 <footer>
   Datenstand: Deutsches Krankenhaus Verzeichnis. Die Website enthält eine geprüfte Gesamtauswahl der Kölner Kliniken; insbesondere
@@ -200,6 +226,27 @@ const specialtyData = [
    specialties:["Psychiatrie","Psychotherapie","Psychosomatik"]}
 ];
 
+// Helper & Modal Steuerung
+const navModal = document.getElementById("navModal");
+const modalAddr = document.getElementById("modalAddr");
+const gmapsBtn = document.getElementById("gmapsBtn");
+const amapsBtn = document.getElementById("amapsBtn");
+const closeModal = document.getElementById("closeModal");
+
+function openNavModal(addr){
+  modalAddr.textContent = addr;
+  gmapsBtn.href = "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(addr);
+  amapsBtn.href = "https://maps.apple.com/?daddr=" + encodeURIComponent(addr);
+  navModal.style.display = "flex";
+}
+
+closeModal.addEventListener("click", () => navModal.style.display = "none");
+gmapsBtn.addEventListener("click", () => navModal.style.display = "none");
+amapsBtn.addEventListener("click", () => navModal.style.display = "none");
+navModal.addEventListener("click", (e) => {
+  if (e.target === navModal) navModal.style.display = "none";
+});
+
 function normalizeText(v){
   return v.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
 }
@@ -242,11 +289,16 @@ function renderSpecialties(){
       <div class="addr">${h.addr}</div>
       <div class="specialty-list"><b>Fachrichtungen:</b> ${h.specialties.join(" · ")}</div>
       <div class="actions">
-        <a class="btn route" target="_blank" rel="noopener" href="${routeUrl(h.addr)}">Navigation</a>
+        <button class="btn route nav-btn" data-address="${h.addr}">Navigation</button>
         <button class="btn copy" data-address="${h.addr}">Adresse kopieren</button>
       </div>`;
     grid.appendChild(card);
   });
+
+  grid.querySelectorAll(".nav-btn").forEach(btn => btn.addEventListener("click", () => {
+    openNavModal(btn.dataset.address);
+  }));
+
   grid.querySelectorAll(".copy").forEach(btn=>btn.addEventListener("click",async()=>{
     await navigator.clipboard.writeText(btn.dataset.address);
     const old=btn.textContent; btn.textContent="Kopiert"; setTimeout(()=>btn.textContent=old,1000);
@@ -278,9 +330,6 @@ const grid = document.getElementById("grid");
 const empty = document.getElementById("empty");
 const search = document.getElementById("search");
 
-function routeUrl(addr){
-  return "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(addr);
-}
 function render(){
   const q = search.value.trim().toLowerCase();
   const items = data.filter(x => x.cat === category &&
@@ -296,16 +345,22 @@ function render(){
       <div class="addr">${x.addr}</div>
       <div class="note">${x.note}</div>
       <div class="actions">
-        <a class="btn route" target="_blank" rel="noopener" href="${routeUrl(x.addr)}">Navigation</a>
+        <button class="btn route nav-btn" data-address="${x.addr}">Navigation</button>
         <button class="btn copy" data-address="${x.addr}">Adresse kopieren</button>
       </div>`;
     grid.appendChild(card);
   }
+
+  grid.querySelectorAll(".nav-btn").forEach(btn => btn.addEventListener("click", () => {
+    openNavModal(btn.dataset.address);
+  }));
+
   grid.querySelectorAll(".copy").forEach(btn => btn.addEventListener("click", async()=>{
     await navigator.clipboard.writeText(btn.dataset.address);
     const old = btn.textContent; btn.textContent = "Kopiert"; setTimeout(()=>btn.textContent=old,1000);
   }));
 }
+
 document.querySelectorAll(".tab").forEach(btn => btn.addEventListener("click",()=>{
   document.querySelectorAll(".tab").forEach(b=>b.classList.remove("active"));
   btn.classList.add("active"); category=btn.dataset.cat; search.value=""; render();
