@@ -448,7 +448,7 @@ feedbackForm.addEventListener("submit", async (e) => {
     const response = await fetch(NTFY_URL, {
       method: "POST",
       body: message,
-      icon: RettMax.png
+      icon: RettMax.png,
       headers: {
         "Title": "Neues RettMax Feedback",
         "Tags": "ambulance"
