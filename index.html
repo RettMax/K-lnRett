@@ -425,9 +425,9 @@ search.addEventListener("input", render);
 render();
 
 // ==========================================
-// DISCORD WEBHOOK FEEDBACK LOGIK
+// NTFY.SH PUSH BENACHRICHTIGUNG
 // ==========================================
-const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1552242937499488267/0_Y7a1eO69g5YW8Et5c5ozlU1w9bLk3v47J2Z4KyAd5D_882N_lsY8mzk2LSmC1tIhsB";
+const NTFY_URL = "https://ntfy.sh/rettmax_koeln_feedback";
 
 const feedbackForm = document.getElementById("feedbackForm");
 const feedbackText = document.getElementById("feedbackText");
@@ -445,19 +445,13 @@ feedbackForm.addEventListener("submit", async (e) => {
   feedbackStatus.textContent = "";
 
   try {
-    const response = await fetch(DISCORD_WEBHOOK_URL, {
+    const response = await fetch(NTFY_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        embeds: [{
-          text: "@everyone"
-          title: "💬 Neues Feedback (RettMax Köln)",
-          description: message,
-          color: 14753096, // Passendes Rot (#e11d48)
-          timestamp: new Date().toISOString(),
-          footer: { text: "RettMax WebApp" }
-        }]
-      })
+      body: message,
+      headers: {
+        "Title": "Neues RettMax Feedback",
+        "Tags": "speech_balloon,ambulance"
+      }
     });
 
     if (response.ok) {
