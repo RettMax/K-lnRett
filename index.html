@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" style="background-color: #080d18;">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -14,7 +14,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="RettMax.png">
 
   <!-- Favicon für normale Browser-Tabs -->
-  <link rel="icon" type="image/svg+xml" href="RettMax.png">
+  <link rel="icon" type="image/png" href="RettMax.png">
 
   <title>RettMax Köln – Navigation</title>
   
@@ -22,10 +22,15 @@
   <link rel="stylesheet" href="style.css?v=4">
 </head>
  
-<body>
+<body style="background-color: #080d18;">
+
 <header>
   <div class="top">
-    <div class="brand">RettMax <span>Köln</span></div>
+    <!-- Topbar Logo + Name -->
+    <div class="brand">
+      <img src="RettMax.png" alt="RettMax Logo" class="brand-logo" style="height: 32px; width: 32px; object-fit: contain;">
+      <span>RettMax</span> Köln
+    </div>
     <div class="status">Offline-Daten</div>
   </div>
 </header>
@@ -84,6 +89,18 @@
     </div>
 
     <div id="map"></div>
+  </section>
+
+  <!-- Feedback-Sektion -->
+  <section class="feedback-section">
+    <h2>Feedback & Fehler melden</h2>
+    <p class="section-sub">Fehlt ein Ziel oder hast du einen Fehler gefunden? Schick uns eine kurze Nachricht!</p>
+
+    <form id="feedbackForm" class="feedback-form">
+      <textarea id="feedbackText" placeholder="Deine Nachricht, Korrektur oder Vorschlag..." required></textarea>
+      <button type="submit" id="feedbackBtn" class="btn route">Feedback senden</button>
+      <div id="feedbackStatus" class="feedback-status"></div>
+    </form>
   </section>
 </main>
 
@@ -406,12 +423,10 @@ document.querySelectorAll(".tab").forEach(btn => btn.addEventListener("click", (
 
 search.addEventListener("input", render);
 render();
-</script>
 
 // ==========================================
 // DISCORD WEBHOOK FEEDBACK LOGIK
 // ==========================================
-// Ersetze den Platzhalter unten durch deine echte Discord Webhook URL:
 const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1552242937499488267/0_Y7a1eO69g5YW8Et5c5ozlU1w9bLk3v47J2Z4KyAd5D_882N_lsY8mzk2LSmC1tIhsB";
 
 const feedbackForm = document.getElementById("feedbackForm");
@@ -424,12 +439,6 @@ feedbackForm.addEventListener("submit", async (e) => {
   const message = feedbackText.value.trim();
 
   if (!message) return;
-
-  if (DISCORD_WEBHOOK_URL.includes("HIER_DEINE_DISCORD")) {
-    feedbackStatus.className = "feedback-status error";
-    feedbackStatus.textContent = "Fehler: Webhook-URL wurde noch nicht im Code hinterlegt.";
-    return;
-  }
 
   feedbackBtn.disabled = true;
   feedbackBtn.textContent = "Wird gesendet…";
@@ -465,7 +474,7 @@ feedbackForm.addEventListener("submit", async (e) => {
     feedbackBtn.textContent = "Feedback senden";
   }
 });
-
+</script>
 
 </body>
 </html>
