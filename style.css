@@ -27,6 +27,60 @@ html, body {
   -webkit-tap-highlight-color: transparent;
 }
 
+/* ==========================================
+   9. FEEDBACK SECTION
+   ========================================== */
+.feedback-section {
+  margin: 34px 0;
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+}
+
+.feedback-section h2 {
+  margin: 0 0 7px;
+  font-size: 25px;
+}
+
+.feedback-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 600px;
+}
+
+.feedback-form textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  background: #0f172a;
+  color: white;
+  border-radius: var(--radius);
+  font-size: 15px;
+  font-family: inherit;
+  outline: none;
+  resize: vertical;
+  transition: border-color 0.2s;
+}
+
+.feedback-form textarea:focus {
+  border-color: var(--accent2);
+}
+
+.feedback-status {
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.feedback-status.success {
+  color: #86efac;
+}
+
+.feedback-status.error {
+  color: #f87171;
+}
+
 body {
   min-height: 100vh;
   background: linear-gradient(180deg, var(--bg), #0f172a);
