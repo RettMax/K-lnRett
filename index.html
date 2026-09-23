@@ -450,6 +450,7 @@ feedbackForm.addEventListener("submit", async (e) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         embeds: [{
+          text: "@everyone"
           title: "💬 Neues Feedback (RettMax Köln)",
           description: message,
           color: 14753096, // Passendes Rot (#e11d48)
